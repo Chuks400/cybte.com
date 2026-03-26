@@ -1,0 +1,580 @@
+/* Payment Modal Styles */
+.payment-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(5, 11, 30, 0.9);
+    backdrop-filter: blur(8px);
+    justify-content: center;
+    align-items: center;
+}
+
+.payment-modal-content {
+    background: linear-gradient(135deg, rgba(31, 41, 55, 0.95), rgba(15, 25, 45, 0.95));
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    border-radius: 20px;
+    width: 90%;
+    max-width: 480px;
+    box-shadow: 0 25px 60px rgba(0, 229, 255, 0.2);
+    animation: modalSlideIn 0.3s ease;
+}
+
+@keyframes modalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-30px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.payment-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(0, 229, 255, 0.15);
+}
+
+.payment-modal-header h3 {
+    color: #00E5FF;
+    font-size: 1.2rem;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    color: #b0c4de;
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.close-modal:hover {
+    color: #ff7a7a;
+}
+
+.payment-modal-body {
+    padding: 24px;
+}
+
+/* Order Summary */
+.order-summary {
+    background: rgba(10, 25, 41, 0.6);
+    border: 1px solid rgba(0, 229, 255, 0.15);
+    border-radius: 14px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+}
+
+.order-summary h4 {
+    color: #b0c4de;
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.order-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.order-details span:first-child {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.order-price {
+    color: #00E5FF;
+    font-weight: 900;
+    font-size: 1.3rem;
+}
+
+/* Payment Methods */
+.payment-methods h4 {
+    color: #b0c4de;
+    font-size: 0.9rem;
+    margin-bottom: 14px;
+}
+
+.payment-options {
+    display: grid;
+    gap: 12px;
+}
+
+.pay-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    background: rgba(10, 25, 41, 0.5);
+    border: 2px solid rgba(0, 229, 255, 0.15);
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pay-card:hover {
+    border-color: rgba(0, 229, 255, 0.35);
+    background: rgba(0, 229, 255, 0.08);
+}
+
+.pay-card.selected {
+    border-color: #00E5FF;
+    background: rgba(0, 229, 255, 0.12);
+}
+
+.pay-card.selected .pay-check {
+    opacity: 1;
+    color: #00E5FF;
+}
+
+.pay-icon {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+}
+
+.pay-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.pay-name {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 1rem;
+}
+
+.pay-desc {
+    color: #b0c4de;
+    font-size: 0.8rem;
+    margin-top: 2px;
+}
+
+.pay-check {
+    opacity: 0.3;
+    font-size: 1.2rem;
+    transition: all 0.2s;
+}
+
+/* QR Section */
+.qr-section {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(0, 229, 255, 0.15);
+}
+
+.qr-container {
+    text-align: center;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+}
+
+.qr-container img {
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.qr-instruction {
+    color: #333;
+    margin-top: 14px;
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+.qr-instruction span {
+    color: #00E5FF;
+    font-weight: 800;
+}
+
+.qr-timer {
+    color: #666;
+    font-size: 0.85rem;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+}
+
+.qr-timer i {
+    color: #ff9800;
+}
+
+.payment-status {
+    text-align: center;
+}
+
+.status-pending {
+    color: #b0c4de;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 0.95rem;
+}
+
+.status-success {
+    color: #00ff88;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+    animation: successPulse 0.5s ease;
+}
+
+.status-failed {
+    color: #ff7a7a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+@keyframes successPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+/* Modal Footer */
+.payment-modal-footer {
+    display: flex;
+    gap: 12px;
+    padding: 20px 24px;
+    border-top: 1px solid rgba(0, 229, 255, 0.15);
+}
+
+.pay-confirm-btn {
+    flex: 1;
+    height: 50px;
+    background: linear-gradient(45deg, #00E5FF, #0099CC);
+    border: none;
+    border-radius: 12px;
+    color: #0a1929;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.pay-confirm-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 229, 255, 0.3);
+}
+
+.pay-confirm-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.pay-cancel-btn {
+    height: 50px;
+    padding: 0 24px;
+    background: transparent;
+    border: 1px solid rgba(255, 68, 68, 0.4);
+    border-radius: 12px;
+    color: #ff7a7a;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.pay-cancel-btn:hover {
+    background: rgba(255, 68, 68, 0.1);
+}
+
+/* CNY Pricing Card Styles */
+.vpn-pricing-grid.cny-pricing {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+.vpn-pricing-grid.cny-pricing .vpn-price-card {
+    background: rgba(31, 41, 55, 0.85);
+    border: 1px solid rgba(0, 229, 255, 0.2);
+    border-radius: 18px;
+    padding: 28px;
+    position: relative;
+    transition: all 0.3s ease;
+}
+
+.vpn-pricing-grid.cny-pricing .vpn-price-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 20px 50px rgba(0, 229, 255, 0.15);
+    border-color: rgba(0, 229, 255, 0.35);
+}
+
+.vpn-pricing-grid.cny-pricing .vpn-price-card.featured {
+    border-color: rgba(0, 229, 255, 0.5);
+    box-shadow: 0 20px 50px rgba(0, 229, 255, 0.2);
+}
+
+.plan-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.plan-icon {
+    font-size: 1.5rem;
+}
+
+.fire-icon {
+    font-size: 1.2rem;
+    margin-left: auto;
+}
+
+.vpn-pricing-grid.cny-pricing .vpn-price-card h3 {
+    color: #ffffff;
+    font-size: 1.15rem;
+    font-weight: 800;
+    margin: 0;
+}
+
+.vpn-pricing-grid.cny-pricing .vpn-price {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin: 20px 0;
+}
+
+.vpn-pricing-grid.cny-pricing .vpn-price .currency {
+    color: #00E5FF;
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.vpn-pricing-grid.cny-pricing .vpn-price {
+    color: #00E5FF;
+    font-size: 2.2rem;
+    font-weight: 900;
+}
+
+.vpn-pricing-grid.cny-pricing .vpn-price .period {
+    color: #b0c4de;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-left: 4px;
+}
+
+.plan-features {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 24px 0;
+}
+
+.plan-features li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 8px 0;
+    color: #b0c4de;
+    font-size: 0.9rem;
+    border-bottom: 1px solid rgba(0, 229, 255, 0.08);
+}
+
+.plan-features li:last-child {
+    border-bottom: none;
+}
+
+.plan-features li i {
+    color: #00E5FF;
+    width: 18px;
+    margin-top: 2px;
+}
+
+.plan-features .badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+}
+
+.badge.student {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.badge.recommend {
+    background: rgba(255, 152, 0, 0.15);
+    color: #ff9800;
+}
+
+.badge.regular,
+.badge.standard,
+.badge.premium-price {
+    background: rgba(233, 30, 99, 0.15);
+    color: #e91e63;
+}
+
+.badge.high-bw {
+    background: rgba(0, 229, 255, 0.15);
+    color: #00E5FF;
+}
+
+.badge.premium {
+    background: rgba(156, 39, 176, 0.15);
+    color: #9c27b0;
+}
+
+.no-share {
+    font-size: 1rem;
+    color: #ff7a7a;
+}
+
+.tutorial-link,
+.telegram-link {
+    color: #00E5FF;
+    text-decoration: none;
+    font-weight: 700;
+}
+
+.tutorial-link:hover,
+.telegram-link:hover {
+    text-decoration: underline;
+}
+
+.subscribe-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 48px;
+    background: linear-gradient(45deg, #00E5FF, #0099CC);
+    border: none;
+    border-radius: 12px;
+    color: #0a1929;
+    font-weight: 800;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.subscribe-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(0, 229, 255, 0.35);
+}
+
+@media (max-width: 768px) {
+    .payment-modal-content {
+        width: 95%;
+        margin: 20px;
+    }
+    
+    .vpn-pricing-grid.cny-pricing {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Payment History Styles */
+.payment-history {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.payment-item {
+    background: rgba(10, 25, 41, 0.5);
+    border: 1px solid rgba(0, 229, 255, 0.15);
+    border-radius: 12px;
+    padding: 14px 16px;
+    transition: all 0.2s ease;
+}
+
+.payment-item:hover {
+    border-color: rgba(0, 229, 255, 0.3);
+    background: rgba(0, 229, 255, 0.05);
+}
+
+.payment-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.payment-plan {
+    color: #ffffff;
+    font-weight: 800;
+    font-size: 0.95rem;
+}
+
+.payment-method {
+    color: #b0c4de;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.payment-details {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.payment-amount {
+    color: #00E5FF;
+    font-weight: 900;
+    font-size: 1.1rem;
+}
+
+.payment-status {
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+.payment-status.paid {
+    background: rgba(0, 255, 136, 0.15);
+    color: #00ff88;
+}
+
+.payment-status.pending {
+    background: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.payment-status.failed {
+    background: rgba(255, 68, 68, 0.15);
+    color: #ff7a7a;
+}
+
+.payment-date {
+    color: #8a9bb0;
+    font-size: 0.75rem;
+}

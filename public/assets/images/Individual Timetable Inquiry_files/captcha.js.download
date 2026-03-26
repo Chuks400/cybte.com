@@ -1,0 +1,138 @@
+var cxyzmlx = jQuery("#cxyzmlx").val();////查询验证码类型:0-正方,1-网易，2-顶象
+//得到验证码对象-正方
+var zfcaptchaBusiness;
+function getZFCaptchaObj(success,fail){
+	zfcaptchaBusiness =  new zfdunCaptcha({
+        onVerifySuccess:function(){//验证成功的操作
+        	if(success!=null) success;
+        },
+        onVerifyFail:function(){
+        	if(fail!=null) fail;
+        }
+    });
+	refreshCaptcha();//验证码刷新
+	return zfcaptchaBusiness;
+}
+
+//得到验证码对象-网易
+var captchaIns;
+function getNECaptchaObj(success,fail){
+	initNECaptcha({
+		  element: '#captcha_div',//验证码对象
+		  captchaId: jQuery("#captchaId").val(),//
+		  mode: 'popup',//触发浮动式:float，嵌入式:embed,弹窗式:popup
+		  width: '320px',
+        onVerify: function(err, ret){
+            if(!err){
+          	  // ret['validate'] 获取二次校验数据
+          	  jQuery("#validate").val(ret['validate']);
+          	  console.log("网易 validate:"+ret['validate']);
+          	  success;//验证成功后，需要操作的操作
+            }
+          }
+		}, function (instance) {
+		  // 初始化成功后得到验证实例instance，可以调用实例的方法
+		  captchaIns = instance
+		}, function (err) {
+		  // 初始化失败后触发该函数，err对象描述当前错误信息
+		});
+}
+
+//得到验证码对象-顶象
+var myCaptcha;
+function getDXCaptchaObj(success,fail){
+	myCaptcha = _dx.Captcha(document.getElementById('captcha_div'), {
+		apiServer: jQuery("#apiServer").val(), // 请填写这个配置，按照下面“接入域名”所示!注意：末尾不要有斜杆！
+	    appId: jQuery("#appId").val(), //appId，在控制台中“应用管理”或“应用配置”模块获取
+	    style: 'popup', // 可省略
+	    success: function (token) {
+	      jQuery("#validate").val(token);
+    	  console.log("顶象 token:"+token);
+    	  myCaptcha.hide();
+    	  success;//验证成功后，需要操作的操作
+	    }
+	});
+}
+
+//得到验证码对象
+function getCommonCaptchaObj(success,fail){
+	if(cxyzmlx=="0"){	
+		getZFCaptchaObj(success,fail);
+	}else if(cxyzmlx=="1"){	
+		getNECaptchaObj(success,fail);
+	}else if(cxyzmlx=="2"){	
+		getDXCaptchaObj(success,fail);
+	}
+}
+
+//刷新验证码-正方
+function refreshZFCaptcha(){
+	jQuery.post(_path+"/zfcaptchaBusiness",{type: "refresh",instanceId:"zfcaptchaBusiness"}, function (data) {	
+		
+    }, 'json');
+}
+
+//刷新验证码-顶象
+function refreshNECaptcha(){
+	
+}
+
+//刷新验证码-顶象
+function refreshDXCaptcha(){
+	myCaptcha.reload();
+}
+
+//刷新验证码
+function refreshCaptcha(){
+	if(cxyzmlx=="0"){	
+		refreshZFCaptcha();
+	}else if(cxyzmlx=="1"){	
+		refreshNECaptcha();
+	}else if(cxyzmlx=="2"){	
+		refreshDXCaptcha();
+	}
+}
+
+//初始化验证码
+function initCaptcha(success,fail){
+	if(jQuery.founded(jQuery("#sfxyyzm").val())&&jQuery("#sfxyyzm").val()!="0"){	//判断是否需要验证码
+		if(cxyzmlx=="0"){	
+			getZFCaptchaObj(success,fail);
+			refreshCaptcha();
+		}else if(cxyzmlx=="1"){	
+			getNECaptchaObj(success,fail);
+		}else if(cxyzmlx=="2"){	
+			getDXCaptchaObj(success,fail);
+		}
+	}
+}
+
+//弹出验证码
+function popupCaptcha(tableId){
+	if(jQuery.founded(jQuery("#sfxyyzm").val())&&jQuery("#sfxyyzm").val()!="0"){	//判断是否需要验证码
+		if(cxyzmlx=="0"){
+			zfcaptchaBusiness.popup();
+		}else if(cxyzmlx=="1"){	
+			captchaIns.popUp();
+		}else if(cxyzmlx=="2"){	
+			jQuery("#"+tableId).hide();
+			myCaptcha.show();
+		}
+	}
+}
+
+//进行数据查询
+function searchDataCaptcha(seaData){
+	if(jQuery.founded(jQuery("#sfxyyzm").val())&&jQuery("#sfxyyzm").val()!="0"){	//判断是否需要验证码
+		if(cxyzmlx=="0"){	
+			zfcaptchaBusiness.popup();
+		}else if(cxyzmlx=="1"){	
+			
+		}else if(cxyzmlx=="2"){	
+			
+		}
+	}else{
+		seaData;
+	}
+}
+
