@@ -1,0 +1,186 @@
+# TrustShield AI - Production .htaccess Configuration
+# Place this file in the public/ directory for production deployment
+
+# ============================================================================
+# URL REWRITING
+# ============================================================================
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    
+    # Redirect www to non-www (or vice versa) - uncomment preferred option
+    # Option 1: Redirect www to non-www
+    # RewriteCond %{HTTP_HOST} ^www\.(.*)$ [NC]
+    # RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+    
+    # Option 2: Redirect non-www to www (recommended)
+    RewriteCond %{HTTP_HOST} !^www\. [NC]
+    RewriteRule ^(.*)$ https://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+    
+    # Redirect HTTP to HTTPS
+    RewriteCond %{HTTPS} off
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+    
+    # Remove trailing slashes from non-directories
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)/$ /$1 [R=301,L]
+    
+    # PHP routing - redirect all requests to index.php
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php [QSA,L]
+</IfModule>
+
+# ============================================================================
+# SECURITY HEADERS
+# ============================================================================
+
+<IfModule mod_headers.c>
+    # Prevent clickjacking
+    Header always set X-Frame-Options "SAMEORIGIN"
+    
+    # Prevent MIME type sniffing
+    Header always set X-Content-Type-Options "nosniff"
+    
+    # Enable XSS protection
+    Header always set X-XSS-Protection "1; mode=block"
+    
+    # Referrer policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Permissions policy (formerly Feature-Policy)
+    Header always set Permissions-Policy "geolocation=(), microphone=(), camera=(), payment=()"
+    
+    # Remove server information
+    Header always unset X-Powered-By
+    Header always unset Server
+    
+    # HSTS (HTTPS Strict Transport Security) - enable after SSL is working
+    # Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
+</IfModule>
+
+# ============================================================================
+# BROWSER CACHING
+# ============================================================================
+
+<IfModule mod_expires.c>
+    ExpiresActive On
+    
+    # Images
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType image/svg+xml "access plus 1 year"
+    ExpiresByType image/x-icon "access plus 1 year"
+    
+    # CSS and JavaScript
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    
+    # Fonts
+    ExpiresByType font/woff2 "access plus 1 year"
+    ExpiresByType application/font-woff2 "access plus 1 year"
+    ExpiresByType application/x-font-woff "access plus 1 year"
+    
+    # HTML
+    ExpiresByType text/html "access plus 1 hour"
+</IfModule>
+
+# ============================================================================
+# COMPRESSION (GZIP)
+# ============================================================================
+
+<IfModule mod_deflate.c>
+    # Enable compression
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css
+    AddOutputFilterByType DEFLATE application/javascript application/json
+    AddOutputFilterByType DEFLATE application/rss+xml application/vnd.ms-fontobject
+    AddOutputFilterByType DEFLATE application/x-font application/x-font-opentype
+    AddOutputFilterByType DEFLATE application/x-font-otf application/x-font-truetype
+    AddOutputFilterByType DEFLATE application/x-font-ttf application/xhtml+xml
+    AddOutputFilterByType DEFLATE font/opentype font/otf font/ttf font/woff font/woff2
+    AddOutputFilterByType DEFLATE image/svg+xml image/x-icon
+    
+    # Skip already compressed files
+    SetEnvIfNoCase Request_URI \
+        \.(?:gif|jpe?g|png|webp)$ no-gzip dont-vary
+    SetEnvIfNoCase Request_URI \
+        \.(?:exe|t?gz|zip|bz2|sit|rar)$ no-gzip dont-vary
+</IfModule>
+
+# ============================================================================
+# SECURITY - DENY ACCESS TO SENSITIVE FILES
+# ============================================================================
+
+# Deny access to .env file
+<FilesMatch "^\.env">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Deny access to .git directory
+<IfModule mod_rewrite.c>
+    RewriteRule ^\.git/ - [F,L]
+</IfModule>
+
+# Deny access to common sensitive files
+<FilesMatch "^\.(htaccess|htpasswd|gitignore|gitattributes)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Deny access to common development files
+<FilesMatch "(README\.md|CHANGELOG\.md|LICENSE|composer\.(json|lock)|package\.json|deploy\.sh)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Deny access to SQL and backup files
+<FilesMatch "\.(sql|bak|backup|old|orig|save|swp)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# ============================================================================
+# PHP SETTINGS (if using mod_php)
+# ============================================================================
+
+<IfModule mod_php.c>
+    php_flag display_errors off
+    php_flag log_errors on
+    php_value error_log /var/www/cybte.com/logs/php-errors.log
+    php_value upload_max_filesize 8M
+    php_value post_max_size 8M
+    php_value max_execution_time 30
+    php_value memory_limit 256M
+    php_flag expose_php off
+</IfModule>
+
+# ============================================================================
+# ETAGS - For better caching
+# ============================================================================
+
+<IfModule mod_headers.c>
+    FileETag MTime Size
+</IfModule>
+
+# ============================================================================
+# CHARSET - Set default charset
+# ============================================================================
+
+AddDefaultCharset UTF-8
+
+# ============================================================================
+# OPTIONS - Disable directory browsing
+# ============================================================================
+
+Options -Indexes +FollowSymLinks
+
+# ============================================================================
+# SERVER SIGNATURE - Hide server information
+# ============================================================================
+
+ServerSignature Off
