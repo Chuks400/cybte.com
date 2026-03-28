@@ -11,6 +11,8 @@ require_once __DIR__ . '/../../../src/config/database.php';
 require_once __DIR__ . '/../../../src/Payment/PaymentFactory.php';
 
 use TrustShield\Payment\PaymentFactory;
+use TrustShield\VPN\VPNService;
+use TrustShield\Services\EmailService;
 
 // Check authentication
 if (!isset($_SESSION['user_id'])) {
@@ -167,13 +169,27 @@ function activateVPNSubscription($conn, $payment)
 
         // Create VPN account via VPN service if needed
         require_once __DIR__ . '/../../../src/VPN/VPNService.php';
-        use TrustShield\VPN\VPNService;
+        require_once __DIR__ . '/../../../src/Services/EmailService.php';
         
         $vpnService = new VPNService($conn);
         $account = $vpnService->getUserAccount($payment['user_id']);
         
         if (!$account) {
             $vpnService->createAccount($payment['user_id'], null, $payment['plan_name']);
+        }
+        
+        // Send payment success email
+        try {
+            $userStmt = $conn->prepare("SELECT email, name FROM users WHERE id = :user_id LIMIT 1");
+            $userStmt->execute([':user_id' => $payment['user_id']]);
+            $user = $userStmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($user) {
+                $emailService = new EmailService();
+                $emailService->sendPaymentSuccess($payment, $user);
+            }
+        } catch (Exception $e) {
+            error_log("Failed to send payment email: " . $e->getMessage());
         }
 
     } catch (Exception $e) {

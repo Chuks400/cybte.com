@@ -578,3 +578,44 @@
     color: #8a9bb0;
     font-size: 0.75rem;
 }
+
+/* Simulate Payment Button (Testing Only) */
+.simulate-section {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px dashed rgba(255, 193, 7, 0.3);
+    text-align: center;
+}
+
+.simulate-hint {
+    color: #ffc107;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    font-style: italic;
+}
+
+.simulate-btn {
+    background: linear-gradient(45deg, #ffc107, #ff9800);
+    border: none;
+    border-radius: 10px;
+    padding: 12px 24px;
+    color: #0a1929;
+    font-weight: 800;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.simulate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(255, 193, 7, 0.3);
+}
+
+.simulate-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}

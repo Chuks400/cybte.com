@@ -217,6 +217,12 @@ try {
                         <i class="fas fa-spinner fa-spin"></i> Waiting for payment...
                     </div>
                 </div>
+                <div class="simulate-section" id="simulateSection" style="display: none;">
+                    <p class="simulate-hint">Testing mode: Click below to simulate a successful payment</p>
+                    <button class="simulate-btn" onclick="simulatePayment()">
+                        <i class="fas fa-vial"></i> Simulate Payment (Test Only)
+                    </button>
+                </div>
             </div>
         </div>
         
@@ -289,6 +295,12 @@ function createPayment() {
             document.getElementById('paymentQR').src = data.qr_url;
             document.getElementById('qrSection').style.display = 'block';
             document.getElementById('confirmBtn').style.display = 'none';
+            
+            // Show simulate button if in fake/test mode
+            if (data.mode === 'fake') {
+                document.getElementById('simulateSection').style.display = 'block';
+            }
+            
             startPolling(orderId);
             startTimer(900); // 15 minutes
         } else {
@@ -358,6 +370,38 @@ function stopTimer() {
         clearInterval(timerInterval);
         timerInterval = null;
     }
+}
+
+function simulatePayment() {
+    if (!orderId) return;
+    
+    const simulateBtn = document.querySelector('.simulate-btn');
+    simulateBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+    simulateBtn.disabled = true;
+    
+    fetch('api/payment/status.php?order_id=' + orderId + '&simulate_paid=1')
+    .then(res => res.json())
+    .then(data => {
+        if (data.status === 'paid') {
+            stopPolling();
+            stopTimer();
+            document.getElementById('paymentStatus').innerHTML = 
+                '<div class="status-success"><i class="fas fa-check"></i> Payment successful! Redirecting...</div>';
+            document.getElementById('simulateSection').style.display = 'none';
+            setTimeout(() => {
+                window.location.href = 'vpn_dashboard.php?payment=success';
+            }, 1500);
+        } else {
+            simulateBtn.innerHTML = '<i class="fas fa-vial"></i> Simulate Payment (Test Only)';
+            simulateBtn.disabled = false;
+            alert('Simulation failed: ' + (data.error || 'Unknown error'));
+        }
+    })
+    .catch(err => {
+        simulateBtn.innerHTML = '<i class="fas fa-vial"></i> Simulate Payment (Test Only)';
+        simulateBtn.disabled = false;
+        alert('Error: ' + err.message);
+    });
 }
 
 // Close modal on outside click
