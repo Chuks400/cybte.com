@@ -20,6 +20,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 <title>Log In - TrustShield VPN</title>
 
+<link rel="icon" type="image/jpeg" href="assets/images/favicon.jpg">
+<link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.jpg">
+
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
