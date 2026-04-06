@@ -60,12 +60,50 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <i class="fas fa-envelope"></i>
 <input type="email" name="email" placeholder="Email" required>
 </div>
-<div class="form-group">
+<div class="form-group password-group">
 <i class="fas fa-lock"></i>
-<input type="password" name="password" placeholder="Password" required>
+<input type="password" name="password" id="password" placeholder="Password" required>
+<i class="fas fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
 </div>
 <button type="submit" class="submit-btn"><i class="fas fa-right-to-bracket"></i> Log In</button>
 </form>
+
+<script>
+function togglePassword(inputId, icon) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>
+
+<style>
+.password-group {
+    position: relative;
+}
+.password-group .toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #00d4ff;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+.password-group .toggle-password:hover {
+    color: #fff;
+}
+.password-group input {
+    padding-right: 45px !important;
+}
+</style>
 
 </div>
 </div>

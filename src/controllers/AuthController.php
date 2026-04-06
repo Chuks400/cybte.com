@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/../models/User.php';
+require_once __DIR__ . '/../config/database.php';
 
 class AuthController {
 
@@ -13,6 +14,13 @@ class AuthController {
         if($user){
 
             if(password_verify($password, $user['password'])){
+                
+                // Check if email is verified
+                if (empty($user['email_verified'])) {
+                    // Email not verified - redirect to pending page
+                    header("Location: verification_pending.php?email=" . urlencode($email));
+                    exit();
+                }
 
                 session_start();
 
