@@ -11,7 +11,7 @@ require_once __DIR__ . '/../../../src/config/database.php';
 require_once __DIR__ . '/../../../src/auth.php';
 require_once __DIR__ . '/../../../src/Services/EmailService.php';
 
-use TrustShield\Services\EmailService;
+use Cybte\Services\EmailService;
 
 // Check admin authentication
 require_role(['admin'], 'vpn_login.php');

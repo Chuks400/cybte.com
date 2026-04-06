@@ -10,7 +10,7 @@ $email = $_GET['email'] ?? '';
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Verify Your Email - TrustShield VPN</title>
+    <title>Verify Your Email - Cybte VPN</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -121,7 +121,7 @@ $email = $_GET['email'] ?? '';
             <h3><i class="fas fa-list-check"></i> Next Steps:</h3>
             <ul>
                 <li>Open your email inbox</li>
-                <li>Look for email from TrustShield AI</li>
+                <li>Look for email from Cybte AI</li>
                 <li>Click the verification link inside</li>
                 <li>Your account will be activated instantly!</li>
             </ul>

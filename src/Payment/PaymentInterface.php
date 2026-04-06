@@ -1,6 +1,6 @@
 <?php
 
-namespace TrustShield\Payment;
+namespace Cybte\Payment;
 
 /**
  * Payment Interface - Defines contract for all payment providers

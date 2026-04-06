@@ -1,6 +1,6 @@
 <?php
 
-namespace TrustShield\Payment;
+namespace Cybte\Payment;
 
 /**
  * Payment Factory

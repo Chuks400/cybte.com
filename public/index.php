@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TrustShield AI - Advanced Cybersecurity Solutions</title>
+<title>Cybte AI - Advanced Cybersecurity Solutions</title>
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -19,7 +19,7 @@
 <div class="container">
 <div class="header-content">
 <div class="logo">
-<img src="assets/images/logo.jpg" alt="TrustShield AI Logo" class="logo-img">
+<img src="assets/images/logo.png" alt="Cybte AI Logo" class="logo-img">
 </div>
 <nav>
 <a href="index.php" class="active">Home</a>
@@ -35,7 +35,7 @@
 <div class="container">
 <div class="hero-content">
 <div class="hero-text">
-<h1 class="hero-brand"><span class="trust">TRUST</span><span class="shield">SHIELD</span> <span class="ai">AI</span></h1>
+<h1 class="hero-brand"><span class="trust">CYB</span><span class="shield">TE</span> <span class="ai">AI</span></h1>
 <h2>Next-Gen Cybersecurity & Fraud Protection</h2>
 <p>Advanced AI-powered security solutions to protect your business from evolving cyber threats and financial fraud, plus secure VPN privacy protection for safer browsing anywhere.</p>
 <button class="cta-button">Get Started</button>
@@ -204,7 +204,7 @@
 
 <section class="why-choose">
 <div class="container">
-<h2>Why Choose TrustShield AI?</h2>
+<h2>Why Choose Cybte AI?</h2>
 <div class="features-grid">
 <div class="feature-card">
 <div class="feature-icon">
@@ -276,8 +276,8 @@
 <div class="container">
 <div class="about-content">
 <div class="about-text">
-<h2>About TrustShield AI</h2>
-<p>TrustShield AI is a leading cybersecurity company dedicated to protecting businesses from evolving digital threats. With cutting-edge AI technology and a team of security experts, we provide comprehensive solutions to safeguard your digital assets and ensure business continuity, including secure VPN privacy protection for safer browsing.</p>
+<h2>About Cybte AI</h2>
+<p>Cybte AI is a leading cybersecurity company dedicated to protecting businesses from evolving digital threats. With cutting-edge AI technology and a team of security experts, we provide comprehensive solutions to safeguard your digital assets and ensure business continuity, including secure VPN privacy protection for safer browsing.</p>
 <div class="about-stats">
 <div class="stat-box">
 <div class="stat-number">500+</div>
@@ -360,7 +360,7 @@ Send Message
 </div>
 <div class="detail-content">
 <h4>Email</h4>
-<p>security@trustshield.ai</p>
+<p>security@cybte.com</p>
 </div>
 </div>
 <div class="detail-item">
@@ -391,7 +391,7 @@ Send Message
 <div class="container">
 <div class="footer-content">
 <div class="footer-section">
-<h4>TrustShield AI</h4>
+<h4>Cybte AI</h4>
 <p>Advanced cybersecurity solutions for the digital age.</p>
 </div>
 <div class="footer-section">
@@ -422,7 +422,7 @@ Send Message
 </div>
 </div>
 <div class="footer-bottom">
-<p>&copy; 2024 TrustShield AI. All rights reserved. | Protected by military-grade encryption</p>
+<p>&copy; 2024 Cybte AI. All rights reserved. | Protected by military-grade encryption</p>
 </div>
 </div>
 </footer>

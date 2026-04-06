@@ -1,6 +1,6 @@
 <?php
 
-namespace TrustShield\Services;
+namespace Cybte\Services;
 
 /**
  * Email Service
@@ -13,8 +13,8 @@ class EmailService
     
     public function __construct()
     {
-        $this->fromEmail = $_ENV['MAIL_FROM'] ?? 'noreply@trustshield.ai';
-        $this->fromName = $_ENV['MAIL_FROM_NAME'] ?? 'TrustShield VPN';
+        $this->fromEmail = $_ENV['MAIL_FROM'] ?? 'noreply@cybte.com';
+        $this->fromName = $_ENV['MAIL_FROM_NAME'] ?? 'Cybte VPN';
     }
     
     /**
@@ -22,7 +22,7 @@ class EmailService
      */
     public function sendPaymentSuccess(array $payment, array $user): bool
     {
-        $subject = "Payment Successful - TrustShield VPN Subscription";
+        $subject = "Payment Successful - Cybte VPN Subscription";
         
         $body = $this->getPaymentSuccessTemplate([
             'user_name' => $user['name'] ?? $user['email'] ?? 'Valued Customer',
@@ -59,7 +59,7 @@ class EmailService
      */
     public function sendTrafficWarning(array $user, float $usedPercent, float $remainingGb): bool
     {
-        $subject = "Low Traffic Alert - TrustShield VPN";
+        $subject = "Low Traffic Alert - Cybte VPN";
         
         $body = $this->getTrafficWarningTemplate([
             'user_name' => $user['name'] ?? $user['email'] ?? 'Valued Customer',
@@ -75,7 +75,7 @@ class EmailService
      */
     public function sendRefundConfirmation(array $payment, array $user, float $refundAmount): bool
     {
-        $subject = "Refund Processed - TrustShield VPN";
+        $subject = "Refund Processed - Cybte VPN";
         
         $body = $this->getRefundTemplate([
             'user_name' => $user['name'] ?? $user['email'] ?? 'Valued Customer',

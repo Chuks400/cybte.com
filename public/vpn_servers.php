@@ -41,7 +41,7 @@ $servers = [
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Servers - TrustShield VPN</title>
+<title>Servers - Cybte VPN</title>
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -56,7 +56,7 @@ $servers = [
 <div class="container">
 <div class="header-content">
 <div class="logo">
-<a href="index.php"><img src="assets/images/logo.jpg" alt="TrustShield AI Logo" class="logo-img"></a>
+<a href="index.php"><img src="assets/images/logo.png" alt="Cybte AI Logo" class="logo-img"></a>
 </div>
 <nav>
 <a href="vpn.php">Home</a>

@@ -9,7 +9,7 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../../src/config/database.php';
 require_once __DIR__ . '/../../../src/Payment/PaymentFactory.php';
 
-use TrustShield\Payment\PaymentFactory;
+use Cybte\Payment\PaymentFactory;
 
 // Get webhook payload
 $payload = file_get_contents('php://input');
@@ -239,7 +239,7 @@ function activateVPN($conn, array $payment)
         // Create VPN account if needed
         require_once __DIR__ . '/../../../src/VPN/VPNService.php';
         
-        $vpnService = new \TrustShield\VPN\VPNService($conn);
+        $vpnService = new \Cybte\VPN\VPNService($conn);
         $account = $vpnService->getUserAccount($userId);
         
         if (!$account) {

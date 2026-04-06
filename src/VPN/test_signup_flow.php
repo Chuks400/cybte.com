@@ -6,7 +6,7 @@
 require_once __DIR__ . '/../config/database.php';
 require_once __DIR__ . '/VPNService.php';
 
-use TrustShield\VPN\VPNService;
+use Cybte\VPN\VPNService;
 
 echo "=== VPN Signup Flow Test ===\n\n";
 

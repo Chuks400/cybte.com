@@ -6,7 +6,7 @@ require_once __DIR__ . '/../src/auth.php';
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/VPN/VPNService.php';
 
-use TrustShield\VPN\VPNService;
+use Cybte\VPN\VPNService;
 
 require_role(['vpn_user', 'admin'], 'vpn_login.php');
 
@@ -138,7 +138,7 @@ $paymentSuccess = isset($_GET['payment']) && $_GET['payment'] === 'success';
 
 <head>
 
-<title>VPN Dashboard - TrustShield AI</title>
+<title>VPN Dashboard - Cybte AI</title>
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -154,7 +154,7 @@ $paymentSuccess = isset($_GET['payment']) && $_GET['payment'] === 'success';
 <header class="vpn-topbar">
 <div class="vpn-topbar-left">
 <a href="vpn.php" class="vpn-topbar-logo">
-<img src="assets/images/logo.jpg" alt="TrustShield AI Logo" class="vpn-topbar-logo-img">
+<img src="assets/images/logo.png" alt="Cybte AI Logo" class="vpn-topbar-logo-img">
 </a>
 <div class="vpn-topbar-title">User Center</div>
 </div>

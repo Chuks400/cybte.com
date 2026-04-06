@@ -20,7 +20,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - TrustShield AI</title>
+    <title>Login - Cybte AI</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -189,7 +189,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
-                <img src="assets/images/logo.jpg" alt="TrustShield AI" class="login-logo">
+                <img src="assets/images/logo.png" alt="Cybte AI" class="login-logo">
                 <h1 class="login-title">Welcome Back</h1>
                 <p class="login-subtitle">Sign in to access your VPN dashboard</p>
             </div>
@@ -218,7 +218,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             </div>
 
             <div class="login-footer">
-                <p>New to TrustShield?</p>
+                <p>New to Cybte?</p>
                 <a href="vpn_signup.php" class="signup-btn">
                     <i class="fas fa-user-plus"></i> Create Account
                 </a>

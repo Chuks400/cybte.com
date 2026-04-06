@@ -10,7 +10,7 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../../src/config/database.php';
 require_once __DIR__ . '/../../../src/Payment/PaymentFactory.php';
 
-use TrustShield\Payment\PaymentFactory;
+use Cybte\Payment\PaymentFactory;
 
 // Check authentication
 if (!isset($_SESSION['user_id'])) {
@@ -78,7 +78,7 @@ try {
     $paymentData = $paymentProvider->create(
         $newOrderId, 
         floatval($payment['amount']), 
-        "TrustShield VPN - {$payment['plan_name']} (Retry)"
+        "Cybte VPN - {$payment['plan_name']} (Retry)"
     );
 
     // Save new payment to database

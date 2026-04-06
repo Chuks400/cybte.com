@@ -5,7 +5,7 @@
 
 require_once __DIR__ . '/ThreeXUIDatabaseManager.php';
 
-use TrustShield\VPN\ThreeXUIDatabaseManager;
+use Cybte\VPN\ThreeXUIDatabaseManager;
 
 // Database configuration
 require_once __DIR__ . '/../config/database.php';

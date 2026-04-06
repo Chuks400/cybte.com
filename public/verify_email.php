@@ -21,7 +21,7 @@ if (isset($_GET['token'])) {
         $result = $emailVerify->verifyToken($token);
         
         if ($result['success']) {
-            $message = '✓ Your email has been verified successfully! You can now log in to your TrustShield VPN account.';
+            $message = '✓ Your email has been verified successfully! You can now log in to your Cybte VPN account.';
             $type = 'success';
         } else {
             $message = '✗ ' . $result['error'] . '. Please request a new verification link.';
@@ -40,7 +40,7 @@ if (isset($_GET['token'])) {
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Email Verification - TrustShield VPN</title>
+    <title>Email Verification - Cybte VPN</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>

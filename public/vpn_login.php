@@ -18,7 +18,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 <head>
 
-<title>Log In - TrustShield VPN</title>
+<title>Log In - Cybte VPN</title>
 
 <link rel="icon" type="image/jpeg" href="assets/images/favicon.jpg">
 <link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.jpg">
@@ -37,7 +37,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="container">
 <div class="header-content">
 <div class="logo">
-<a href="vpn.php"><img src="assets/images/logo.jpg" alt="TrustShield AI Logo" class="logo-img"></a>
+<a href="vpn.php"><img src="assets/images/logo.png" alt="Cybte AI Logo" class="logo-img"></a>
 </div>
 <nav>
 <a href="vpn.php">Home</a>
@@ -56,7 +56,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="container">
 <div class="vpn-backend-card">
 <h2>Log In</h2>
-<p class="vpn-backend-sub">Access your TrustShield VPN dashboard.</p>
+<p class="vpn-backend-sub">Access your Cybte VPN dashboard.</p>
 
 <form method="POST" class="contact-form" style="max-width: 520px; margin: 0 auto;">
 <div class="form-group">

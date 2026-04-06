@@ -3,7 +3,7 @@
  * VPN Service - Business logic for VPN account management
  * Integrates with 3x-ui backend panels
  */
-namespace TrustShield\VPN;
+namespace Cybte\VPN;
 
 use PDO;
 

@@ -1,6 +1,6 @@
 <?php
 /**
- * TrustShield AI - Email Verification Utility
+ * Cybte AI - Email Verification Utility
  * 
  * Handles email verification token generation and sending
  */
@@ -14,7 +14,7 @@ class EmailVerification {
     public function __construct($conn) {
         $this->conn = $conn;
         $this->fromEmail = getenv('MAIL_FROM_ADDRESS') ?: 'noreply@cybte.com';
-        $this->fromName = getenv('MAIL_FROM_NAME') ?: 'TrustShield AI';
+        $this->fromName = getenv('MAIL_FROM_NAME') ?: 'Cybte AI';
     }
     
     /**
@@ -81,7 +81,7 @@ class EmailVerification {
     public function sendVerificationEmail($email, $token, $name = '') {
         $verificationUrl = 'https://www.cybte.com/verify_email.php?token=' . $token;
         
-        $subject = 'Verify Your TrustShield VPN Account';
+        $subject = 'Verify Your Cybte VPN Account';
         
         $message = <<<HTML
 <!DOCTYPE html>
@@ -99,11 +99,11 @@ class EmailVerification {
 <body>
     <div class="container">
         <div class="header">
-            <h1>Welcome to TrustShield VPN!</h1>
+            <h1>Welcome to Cybte VPN!</h1>
         </div>
         <div class="content">
             <h2>Hello {$name},</h2>
-            <p>Thank you for creating a TrustShield VPN account. Please verify your email address to complete your registration and start using our secure VPN service.</p>
+            <p>Thank you for creating a Cybte VPN account. Please verify your email address to complete your registration and start using our secure VPN service.</p>
             
             <center>
                 <a href="{$verificationUrl}" class="button">Verify Email Address</a>
@@ -117,7 +117,7 @@ class EmailVerification {
             <p>If you didn't create this account, please ignore this email.</p>
         </div>
         <div class="footer">
-            <p>TrustShield AI - Secure VPN Service</p>
+            <p>Cybte AI - Secure VPN Service</p>
             <p>www.cybte.com</p>
         </div>
     </div>
