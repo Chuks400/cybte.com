@@ -1,5 +1,9 @@
+<<<<<<< HEAD
+=======
+CREATE DATABASE cybte;
+>>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
 
-USE trustshield;
+USE cybte;
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,

@@ -9,7 +9,7 @@ session_start();
 require_once __DIR__ . '/../src/auth.php';
 require_once __DIR__ . '/../src/config/database.php';
 
-use TrustShield\Payment\PaymentFactory;
+use Cybte\Payment\PaymentFactory;
 
 // Check admin authentication
 require_role(['admin'], 'vpn_login.php');

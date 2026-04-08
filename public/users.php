@@ -23,7 +23,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <head>
 
-<title>Users - TRUSTSHIELD AI</title>
+<title>Users - CYBTE AI</title>
 
 <link rel="stylesheet" href="assets/css/style.css">
 

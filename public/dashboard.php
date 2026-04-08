@@ -26,7 +26,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - TrustShield AI</title>
+    <title>Dashboard - Cybte AI</title>
     <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -362,7 +362,7 @@ try {
             <div class="sidebar-logo" style="justify-content: center; border-bottom: none; margin-bottom: 20px;">
                 <div style="position: relative; padding: 8px; background: linear-gradient(135deg, rgba(0,229,255,0.3), rgba(0,184,212,0.1)); border-radius: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.1);">
                     <div style="position: relative; padding: 4px; background: #0a1628; border-radius: 20px;">
-                        <img src="assets/images/logo.jpg" alt="TrustShield AI" style="width: px; height: 100px; border-radius: 16px; display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.4);">
+                        <img src="assets/images/logo.png" alt="Cybte AI" style="width: px; height: 100px; border-radius: 16px; display: block; box-shadow: 0 4px 16px rgba(0,0,0,0.4);">
                         <div style="position: absolute; top: -2px; left: 20%; right: 20%; height: 2px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); border-radius: 1px;"></div>
                     </div>
                 </div>
@@ -387,7 +387,7 @@ try {
             <!-- Topbar -->
             <div class="topbar">
                 <div class="topbar-welcome">
-                    <h1 style="font-size: 20px;"><span style="color: #fff; font-weight: 700;">TRUST</span><span style="color: #00e5ff; font-weight: 700;">SHIELD</span> <span style="color: #fff; font-weight: 400;">AI VPN</span></h1>
+                    <h1 style="font-size: 20px;"><span style="color: #fff; font-weight: 700;">CYB</span><span style="color: #00e5ff; font-weight: 700;">TE</span> <span style="color: #fff; font-weight: 400;">AI VPN</span></h1>
                     <p>Secure your connection, protect your privacy</p>
                 </div>
                 <div class="topbar-actions">

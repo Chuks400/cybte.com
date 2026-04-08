@@ -1,7 +1,15 @@
+<<<<<<< HEAD
+=======
+-- Add email verification columns to users table
+>>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
 ALTER TABLE users 
 ADD COLUMN email_verified TINYINT(1) DEFAULT 0,
 ADD COLUMN email_verified_at DATETIME NULL;
 
+<<<<<<< HEAD
+=======
+-- Create email verifications table
+>>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
 CREATE TABLE IF NOT EXISTS email_verifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,

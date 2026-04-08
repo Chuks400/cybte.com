@@ -18,10 +18,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 <head>
 
+<<<<<<< HEAD
 <link rel="icon" type="image/jpeg" href="assets/images/favicon.png">
 <link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.png">
 
 <title>Log In - TrustShield VPN</title>
+=======
+<title>Log In - Cybte VPN</title>
+
+<link rel="icon" type="image/jpeg" href="assets/images/favicon.jpg">
+<link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.jpg">
+>>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -37,7 +44,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="container">
 <div class="header-content">
 <div class="logo">
+<<<<<<< HEAD
 <a href="vpn.php"><img src="assets/images/logo.png" alt="TrustShield AI Logo" class="logo-img"></a>
+=======
+<a href="vpn.php"><img src="assets/images/logo.png" alt="Cybte AI Logo" class="logo-img"></a>
+>>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
 </div>
 <nav>
 <a href="vpn.php">Home</a>
@@ -56,19 +67,57 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="container">
 <div class="vpn-backend-card">
 <h2>Log In</h2>
-<p class="vpn-backend-sub">Access your TrustShield VPN dashboard.</p>
+<p class="vpn-backend-sub">Access your Cybte VPN dashboard.</p>
 
 <form method="POST" class="contact-form" style="max-width: 520px; margin: 0 auto;">
 <div class="form-group">
 <i class="fas fa-envelope"></i>
 <input type="email" name="email" placeholder="Email" required>
 </div>
-<div class="form-group">
+<div class="form-group password-group">
 <i class="fas fa-lock"></i>
-<input type="password" name="password" placeholder="Password" required>
+<input type="password" name="password" id="password" placeholder="Password" required>
+<i class="fas fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
 </div>
 <button type="submit" class="submit-btn"><i class="fas fa-right-to-bracket"></i> Log In</button>
 </form>
+
+<script>
+function togglePassword(inputId, icon) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+</script>
+
+<style>
+.password-group {
+    position: relative;
+}
+.password-group .toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #00d4ff;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+.password-group .toggle-password:hover {
+    color: #fff;
+}
+.password-group input {
+    padding-right: 45px !important;
+}
+</style>
 
 </div>
 </div>

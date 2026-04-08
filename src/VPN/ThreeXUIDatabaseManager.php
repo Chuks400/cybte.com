@@ -3,7 +3,7 @@
  * 3x-ui Database Direct Manager
  * Manages VPN clients by directly manipulating x-ui's SQLite database via SSH
  */
-namespace TrustShield\VPN;
+namespace Cybte\VPN;
 
 use PDO;
 

@@ -19,10 +19,14 @@ if(isset($_SESSION['user_id'])){
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<<<<<<< HEAD
 <link rel="icon" type="image/jpeg" href="assets/images/favicon.png">
 <link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.png">
 
 <title>TrustShield VPN - Privacy & Secure Access</title>
+=======
+<title>Cybte VPN - Privacy & Secure Access</title>
+>>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css?v=2">
@@ -37,7 +41,11 @@ if(isset($_SESSION['user_id'])){
 <div class="container">
 <div class="header-content">
 <div class="logo">
+<<<<<<< HEAD
 <a href="index.php"><img src="assets/images/logo.png" alt="TrustShield AI Logo" class="logo-img"></a>
+=======
+<a href="index.php"><img src="assets/images/logo.png" alt="Cybte AI Logo" class="logo-img"></a>
+>>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
 </div>
 <nav>
 <a href="vpn.php" class="active">Home</a>
@@ -56,7 +64,7 @@ if(isset($_SESSION['user_id'])){
 <div class="container">
 <div class="vpn-hero-inner">
 <div class="vpn-hero-text">
-<h1 class="vpn-title">TrustShield VPN</h1>
+<h1 class="vpn-title">Cybte VPN</h1>
 <p class="vpn-subtitle">Encrypted tunnels for privacy, secure public Wi-Fi, and global access.</p>
 <div class="vpn-cta-row">
 <a class="cta-button" href="<?php echo $authPrimaryLink; ?>"><?php echo $authPrimaryText; ?></a>
@@ -94,7 +102,7 @@ if(isset($_SESSION['user_id'])){
 
 <section class="vpn-features" id="vpn-features">
 <div class="container">
-<h2 class="vpn-section-title">Why TrustShield VPN</h2>
+<h2 class="vpn-section-title">Why Cybte VPN</h2>
 <div class="vpn-features-grid">
 <div class="vpn-feature">
 <div class="vpn-feature-icon"><i class="fas fa-shield-alt"></i></div>
@@ -159,7 +167,7 @@ if(isset($_SESSION['user_id'])){
 <footer>
 <div class="container">
 <div class="footer-bottom">
-<p>&copy; 2024 TrustShield AI. All rights reserved. | TrustShield VPN</p>
+<p>&copy; 2024 Cybte AI. All rights reserved. | Cybte VPN</p>
 </div>
 </div>
 </footer>

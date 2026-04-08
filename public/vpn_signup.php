@@ -1,9 +1,10 @@
 <?php
+
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/VPN/VPNService.php';
 require_once __DIR__ . '/../src/utils/EmailVerification.php';
 
-use TrustShield\VPN\VPNService;
+use Cybte\VPN\VPNService;
 
 $success = false;
 $error = '';
@@ -107,10 +108,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 <head>
 
-<link rel=" icon type=image/jpeg href=ssets/images/favicon.png>\n<link rel=shortcut icon type=image/jpeg href=ssets/images/favicon.png>\n\n<link rel="icon" type="image/jpeg" href="assets/images/favicon.png">
-<link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.png">
-
-<title>Sign Up - TrustShield VPN</title>
+<title>Sign Up - Cybte VPN</title>
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -126,7 +124,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="container">
 <div class="header-content">
 <div class="logo">
-<a href="vpn.php"><img src="assets/images/logo.png" alt="TrustShield AI Logo" class="logo-img"></a>
+<a href="vpn.php"><img src="assets/images/logo.png" alt="Cybte AI Logo" class="logo-img"></a>
 </div>
 <nav>
 <a href="vpn.php">Home</a>
@@ -145,7 +143,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="container">
 <div class="vpn-backend-card">
 <h2>Create Account</h2>
-<p class="vpn-backend-sub">Create your TrustShield VPN account to generate your subscription link.</p>
+<p class="vpn-backend-sub">Create your Cybte VPN account to generate your subscription link.</p>
 
 <?php if($error): ?>
 <div class="vpn-note" style="border-color: rgba(255, 68, 68, 0.35); background: rgba(255, 68, 68, 0.08);">
@@ -215,6 +213,7 @@ document.getElementById('password').addEventListener('input', function() {
     else messages.push('special symbol (!@#$%)');
     
     const colors = ['#ff4444', '#ff8844', '#ffaa44', '#88cc44', '#44cc44'];
+    const labels = ['Very Weak', 'Weak', 'Fair', 'Good', 'Strong'];
     
     strengthBar.style.width = (strength * 20) + '%';
     strengthBar.style.background = colors[strength - 1] || '#ff4444';

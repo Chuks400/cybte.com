@@ -10,7 +10,7 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../../src/config/database.php';
 require_once __DIR__ . '/../../../src/Payment/PaymentFactory.php';
 
-use TrustShield\Payment\PaymentFactory;
+use Cybte\Payment\PaymentFactory;
 
 // Check authentication
 if (!isset($_SESSION['user_id'])) {
@@ -61,7 +61,7 @@ try {
 
     // Create payment using the factory
     $paymentProvider = PaymentFactory::create($method);
-    $paymentData = $paymentProvider->create($orderId, $amount, "TrustShield VPN - {$plan}");
+    $paymentData = $paymentProvider->create($orderId, $amount, "Cybte VPN - {$plan}");
 
     // Save to database
     $stmt = $conn->prepare("

@@ -6,7 +6,7 @@ require_once __DIR__ . '/../src/auth.php';
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/VPN/VPNService.php';
 
-use TrustShield\VPN\VPNService;
+use Cybte\VPN\VPNService;
 
 require_role(['vpn_user', 'admin'], 'vpn_login.php');
 
@@ -138,10 +138,14 @@ $paymentSuccess = isset($_GET['payment']) && $_GET['payment'] === 'success';
 
 <head>
 
+<<<<<<< HEAD
 <link rel=" icon type=image/jpeg href=ssets/images/favicon.png>\n<link rel=shortcut icon type=image/jpeg href=ssets/images/favicon.png>\n\n<link rel="icon" type="image/jpeg" href="assets/images/favicon.png">
 <link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.png">
 
 <title>VPN Dashboard - TrustShield AI</title>
+=======
+<title>VPN Dashboard - Cybte AI</title>
+>>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -157,7 +161,11 @@ $paymentSuccess = isset($_GET['payment']) && $_GET['payment'] === 'success';
 <header class="vpn-topbar">
 <div class="vpn-topbar-left">
 <a href="vpn.php" class="vpn-topbar-logo">
+<<<<<<< HEAD
 <img src="assets/images/logo.png" alt="TrustShield AI Logo" class="vpn-topbar-logo-img">
+=======
+<img src="assets/images/logo.png" alt="Cybte AI Logo" class="vpn-topbar-logo-img">
+>>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
 </a>
 <div class="vpn-topbar-title">User Center</div>
 </div>

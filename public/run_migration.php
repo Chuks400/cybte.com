@@ -6,7 +6,7 @@
 
 require_once __DIR__ . '/../src/config/database.php';
 
-echo "Running TrustShield Payment Migration...\n\n";
+echo "Running Cybte Payment Migration...\n\n";
 
 try {
     $database = new Database();

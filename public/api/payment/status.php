@@ -10,9 +10,9 @@ header('Content-Type: application/json');
 require_once __DIR__ . '/../../../src/config/database.php';
 require_once __DIR__ . '/../../../src/Payment/PaymentFactory.php';
 
-use TrustShield\Payment\PaymentFactory;
-use TrustShield\VPN\VPNService;
-use TrustShield\Services\EmailService;
+use Cybte\Payment\PaymentFactory;
+use Cybte\VPN\VPNService;
+use Cybte\Services\EmailService;
 
 // Check authentication
 if (!isset($_SESSION['user_id'])) {
