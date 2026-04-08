@@ -52,3 +52,9 @@ To add an exception for this directory, call:
 
 	git config --global --add safe.directory /var/www/cybte.com
 
+2026-04-08 11:45:03 - Deploy triggered by Chuks400
+fatal: detected dubious ownership in repository at '/var/www/cybte.com'
+To add an exception for this directory, call:
+
+	git config --global --add safe.directory /var/www/cybte.com
+
