@@ -1,6 +1,6 @@
-CREATE DATABASE trustshield;
+CREATE DATABASE cybte;
 
-USE trustshield;
+USE cybte;
 
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
