@@ -1,5 +1,8 @@
 <?php
-
+// Load environment variables
+if (file_exists(__DIR__ . '/../../.env')) {
+    require_once __DIR__ . '/../../.env';
+}
 class Database {
 
     private $host = "127.0.0.1";

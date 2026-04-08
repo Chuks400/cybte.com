@@ -19,6 +19,9 @@ if(isset($_SESSION['user_id'])){
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/jpeg" href="assets/images/favicon.png">
+<link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.png">
+
 <title>TrustShield VPN - Privacy & Secure Access</title>
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
@@ -34,7 +37,7 @@ if(isset($_SESSION['user_id'])){
 <div class="container">
 <div class="header-content">
 <div class="logo">
-<a href="index.php"><img src="assets/images/logo.jpg" alt="TrustShield AI Logo" class="logo-img"></a>
+<a href="index.php"><img src="assets/images/logo.png" alt="TrustShield AI Logo" class="logo-img"></a>
 </div>
 <nav>
 <a href="vpn.php" class="active">Home</a>

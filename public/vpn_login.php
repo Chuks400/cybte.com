@@ -18,6 +18,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 <head>
 
+<link rel="icon" type="image/jpeg" href="assets/images/favicon.png">
+<link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.png">
+
 <title>Log In - TrustShield VPN</title>
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
@@ -34,7 +37,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="container">
 <div class="header-content">
 <div class="logo">
-<a href="vpn.php"><img src="assets/images/logo.jpg" alt="TrustShield AI Logo" class="logo-img"></a>
+<a href="vpn.php"><img src="assets/images/logo.png" alt="TrustShield AI Logo" class="logo-img"></a>
 </div>
 <nav>
 <a href="vpn.php">Home</a>

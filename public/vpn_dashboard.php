@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 require_once __DIR__ . '/../src/auth.php';
 require_once __DIR__ . '/../src/config/database.php';
@@ -136,6 +138,9 @@ $paymentSuccess = isset($_GET['payment']) && $_GET['payment'] === 'success';
 
 <head>
 
+<link rel=" icon type=image/jpeg href=ssets/images/favicon.png>\n<link rel=shortcut icon type=image/jpeg href=ssets/images/favicon.png>\n\n<link rel="icon" type="image/jpeg" href="assets/images/favicon.png">
+<link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.png">
+
 <title>VPN Dashboard - TrustShield AI</title>
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
@@ -152,7 +157,7 @@ $paymentSuccess = isset($_GET['payment']) && $_GET['payment'] === 'success';
 <header class="vpn-topbar">
 <div class="vpn-topbar-left">
 <a href="vpn.php" class="vpn-topbar-logo">
-<img src="assets/images/logo.jpg" alt="TrustShield AI Logo" class="vpn-topbar-logo-img">
+<img src="assets/images/logo.png" alt="TrustShield AI Logo" class="vpn-topbar-logo-img">
 </a>
 <div class="vpn-topbar-title">User Center</div>
 </div>

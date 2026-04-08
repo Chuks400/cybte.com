@@ -1,7 +1,7 @@
 <?php
-
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/VPN/VPNService.php';
+require_once __DIR__ . '/../src/utils/EmailVerification.php';
 
 use TrustShield\VPN\VPNService;
 
@@ -68,22 +68,28 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 $stmt->bindParam(':status', $status);
                 $stmt->execute();
 
+                // Send email verification
+                $emailVerify = new EmailVerification($conn);
+                $token = $emailVerify->generateToken();
+                
+                if ($emailVerify->saveToken($newUserId, $email, $token)) {
+                    $emailSent = $emailVerify->sendVerificationEmail($email, $token, $name);
+                    
+                    if (!$emailSent) {
+                        error_log('EmailVerification: Failed to send verification email to ' . $email);
+                    }
+                }
+
                 // Create real VPN account via 3x-ui API
                 $vpnService = new VPNService($conn);
                 $vpnAccount = $vpnService->createAccount($newUserId, null, 'trial');
                 
                 if (!$vpnAccount) {
-                    // VPN creation failed but user was created - log error for admin
                     error_log('VPNService: Failed to create VPN account for user ' . $newUserId);
-                    // Continue anyway - user can be assigned manually later
                 }
 
-                session_start();
-                $_SESSION['user_id'] = $newUserId;
-                $_SESSION['user_name'] = $name;
-                $_SESSION['role'] = $role;
-
-                header('Location: vpn_dashboard.php');
+                // Redirect to verification pending page
+                header('Location: verification_pending.php?email=' . urlencode($email));
                 exit();
             } else {
                 $error = 'Could not create account.';
@@ -101,6 +107,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 <head>
 
+<link rel=" icon type=image/jpeg href=ssets/images/favicon.png>\n<link rel=shortcut icon type=image/jpeg href=ssets/images/favicon.png>\n\n<link rel="icon" type="image/jpeg" href="assets/images/favicon.png">
+<link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.png">
+
 <title>Sign Up - TrustShield VPN</title>
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
@@ -117,7 +126,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="container">
 <div class="header-content">
 <div class="logo">
-<a href="vpn.php"><img src="assets/images/logo.jpg" alt="TrustShield AI Logo" class="logo-img"></a>
+<a href="vpn.php"><img src="assets/images/logo.png" alt="TrustShield AI Logo" class="logo-img"></a>
 </div>
 <nav>
 <a href="vpn.php">Home</a>
@@ -150,16 +159,115 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <i class="fas fa-envelope"></i>
 <input type="email" name="email" placeholder="Email" required>
 </div>
-<div class="form-group">
+<div class="form-group password-group">
 <i class="fas fa-lock"></i>
-<input type="password" name="password" placeholder="Password" required>
+<input type="password" name="password" id="password" placeholder="Password" required>
+<i class="fas fa-eye toggle-password" onclick="togglePassword('password', this)"></i>
 </div>
-<div class="form-group">
+<div class="password-strength" id="password-strength">
+<div class="strength-bar"></div>
+<span class="strength-text">Enter at least 8 characters with uppercase, lowercase, number, and symbol</span>
+</div>
+<div class="form-group password-group">
 <i class="fas fa-lock"></i>
-<input type="password" name="confirm_password" placeholder="Confirm Password" required>
+<input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
+<i class="fas fa-eye toggle-password" onclick="togglePassword('confirm_password', this)"></i>
 </div>
 <button type="submit" class="submit-btn"><i class="fas fa-user-plus"></i> Create Account</button>
 </form>
+
+<script>
+function togglePassword(inputId, icon) {
+    const input = document.getElementById(inputId);
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+    } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+    }
+}
+
+// Password strength checker
+document.getElementById('password').addEventListener('input', function() {
+    const password = this.value;
+    const strengthBar = document.querySelector('.strength-bar');
+    const strengthText = document.querySelector('.strength-text');
+    
+    let strength = 0;
+    let messages = [];
+    
+    if (password.length >= 8) strength++;
+    else messages.push('8+ characters');
+    
+    if (/[A-Z]/.test(password)) strength++;
+    else messages.push('uppercase letter');
+    
+    if (/[a-z]/.test(password)) strength++;
+    else messages.push('lowercase letter');
+    
+    if (/[0-9]/.test(password)) strength++;
+    else messages.push('number');
+    
+    if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength++;
+    else messages.push('special symbol (!@#$%)');
+    
+    const colors = ['#ff4444', '#ff8844', '#ffaa44', '#88cc44', '#44cc44'];
+    
+    strengthBar.style.width = (strength * 20) + '%';
+    strengthBar.style.background = colors[strength - 1] || '#ff4444';
+    
+    if (strength === 5) {
+        strengthText.textContent = '✓ Strong password!';
+        strengthText.style.color = '#44cc44';
+    } else {
+        strengthText.textContent = 'Add: ' + messages.join(', ');
+        strengthText.style.color = '#ffaa44';
+    }
+});
+</script>
+
+<style>
+.password-group {
+    position: relative;
+}
+.password-group .toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #00d4ff;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+.password-group .toggle-password:hover {
+    color: #fff;
+}
+.password-group input {
+    padding-right: 45px !important;
+}
+.password-strength {
+    margin: -10px 0 15px 0;
+    padding: 0 10px;
+}
+.strength-bar {
+    height: 4px;
+    width: 0%;
+    background: #ff4444;
+    transition: all 0.3s;
+    border-radius: 2px;
+    margin-bottom: 5px;
+}
+.strength-text {
+    font-size: 12px;
+    color: #ffaa44;
+    display: block;
+    margin-top: 5px;
+}
+</style>
 
 </div>
 </div>
