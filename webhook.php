@@ -21,8 +21,21 @@ $signature_sha256 = $_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? '';
 // Get payload
 $payload = file_get_contents('php://input');
 
+// Determine which signature header is provided
+if (!empty($signature_sha256)) {
+    $signature = $signature_sha256;
+    $algorithm = 'sha256';
+} elseif (!empty($signature_sha1)) {
+    $signature = $signature_sha1;
+    $algorithm = 'sha1';
+} else {
+    http_response_code(403);
+    file_put_contents($deployLog, date('Y-m-d H:i:s') . " - Missing webhook signature\n", FILE_APPEND);
+    exit('Unauthorized');
+}
+
 // Verify signature
-$expected = 'sha256=' . hash_hmac('sha256', $payload, $secret);
+$expected = $algorithm . '=' . hash_hmac($algorithm, $payload, $secret);
 
 // Debug log
 $debug = date('Y-m-d H:i:s') . " - Received: " . substr($signature, 0, 20) . "... Expected: " . substr($expected, 0, 20) . "...\n";
