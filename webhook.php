@@ -13,6 +13,11 @@ $payload = file_get_contents('php://input');
 
 // Verify signature
 $expected = 'sha256=' . hash_hmac('sha256', $payload, $secret);
+
+// Debug logging
+$debug = date('Y-m-d H:i:s') . " - Received: " . substr($signature, 0, 20) . "... Expected: " . substr($expected, 0, 20) . "...\n";
+file_put_contents(__DIR__ . '/logs/debug.log', $debug, FILE_APPEND);
+
 if (!hash_equals($expected, $signature)) {
     http_response_code(403);
     exit('Unauthorized');
