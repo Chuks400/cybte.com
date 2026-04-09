@@ -491,10 +491,120 @@
     .payment-modal-content {
         width: 95%;
         margin: 20px;
+        padding: 25px 20px;
+    }
+    
+    .payment-modal-header {
+        font-size: 1.5rem;
     }
     
     .vpn-pricing-grid.cny-pricing {
         grid-template-columns: 1fr;
+        gap: 15px;
+    }
+    
+    .pricing-plan {
+        padding: 20px 15px;
+    }
+    
+    .plan-name {
+        font-size: 1.1rem;
+    }
+    
+    .plan-price {
+        font-size: 1.8rem;
+    }
+    
+    .plan-features {
+        gap: 8px;
+    }
+    
+    .payment-item {
+        padding: 12px 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .payment-modal-content {
+        width: 98%;
+        margin: 10px;
+        padding: 20px 15px;
+    }
+    
+    .payment-modal-header {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+    }
+    
+    .vpn-pricing-grid.cny-pricing {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+    
+    .pricing-plan {
+        padding: 15px 12px;
+    }
+    
+    .plan-name {
+        font-size: 1rem;
+    }
+    
+    .plan-price {
+        font-size: 1.5rem;
+    }
+    
+    .plan-features {
+        font-size: 0.85rem;
+        gap: 6px;
+    }
+    
+    .plan-button {
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .payment-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    .payment-details {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .payment-item {
+        padding: 10px 12px;
+    }
+}
+
+@media (max-width: 375px) {
+    .payment-modal-content {
+        width: 99%;
+        margin: 5px;
+        padding: 15px 12px;
+    }
+    
+    .payment-modal-header {
+        font-size: 1.2rem;
+    }
+    
+    .pricing-plan {
+        padding: 12px 10px;
+    }
+    
+    .plan-name {
+        font-size: 0.95rem;
+    }
+    
+    .plan-price {
+        font-size: 1.3rem;
+    }
+    
+    .plan-features {
+        font-size: 0.8rem;
     }
 }
 
