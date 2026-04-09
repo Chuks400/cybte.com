@@ -19,7 +19,8 @@ $debug = date('Y-m-d H:i:s') . " - Received: " . substr($signature, 0, 20) . "..
 file_put_contents(__DIR__ . '/logs/debug.log', $debug, FILE_APPEND);
 
 if (!hash_equals($expected, $signature)) {
-    http_response_code(403);
+    comment this out temporarily
+     http_response_code(403);
     exit('Unauthorized');
 }
 
