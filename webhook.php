@@ -1,32 +1,68 @@
 <?php
-// Your webhook secret from GitHub
+// TrustShield AI - GitHub Webhook Auto-Deployment
+// Production-ready webhook
+
+// Secret token (must match GitHub webhook secret in GitHub settings)
 $secret = 'Cjohn22@';
 
-// Get the raw POST payload
-$payload = file_get_contents('php://input');
+// Log file paths
+$debugLog = __DIR__ . '/logs/debug.log';
+$deployLog = __DIR__ . '/logs/deploy.log';
 
-// Get the signatures sent by GitHub
+// Ensure logs directory exists
+if (!file_exists(dirname($debugLog))) {
+    mkdir(dirname($debugLog), 0777, true);
+}
+
+// Get signature from headers
 $signature_sha1   = $_SERVER['HTTP_X_HUB_SIGNATURE'] ?? '';
 $signature_sha256 = $_SERVER['HTTP_X_HUB_SIGNATURE_256'] ?? '';
 
-// Calculate hashes using your secret
-$hash_sha1   = 'sha1=' . hash_hmac('sha1', $payload, $secret);
-$hash_sha256 = 'sha256=' . hash_hmac('sha256', $payload, $secret);
+// Get payload
+$payload = file_get_contents('php://input');
 
-// Verify signatures
-if (!hash_equals($hash_sha1, $signature_sha1) && !hash_equals($hash_sha256, $signature_sha256)) {
-    // Signatures don't match → reject
+// Verify signature
+$expected = 'sha256=' . hash_hmac('sha256', $payload, $secret);
+
+// Debug log
+$debug = date('Y-m-d H:i:s') . " - Received: " . substr($signature, 0, 20) . "... Expected: " . substr($expected, 0, 20) . "...\n";
+file_put_contents($debugLog, $debug, FILE_APPEND);
+
+if (!hash_equals($expected, $signature)) {
     http_response_code(403);
-    exit('Invalid signature');
+    file_put_contents($deployLog, date('Y-m-d H:i:s') . " - Unauthorized webhook attempt\n", FILE_APPEND);
+    exit('Unauthorized');
 }
 
-// Decode JSON payload
+// Only deploy on push to main branch
 $data = json_decode($payload, true);
+if (($data['ref'] ?? '') !== 'refs/heads/main') {
+    exit('Not main branch');
+}
 
-// --- Process the webhook payload ---
-file_put_contents('webhook_log.txt', print_r($data, true), FILE_APPEND);
+// Log deployment trigger
+$triggeredBy = $data['pusher']['name'] ?? 'unknown';
+file_put_contents($deployLog, date('Y-m-d H:i:s') . " - Deploy triggered by $triggeredBy\n", FILE_APPEND);
 
-// Respond to GitHub with 200 OK
-http_response_code(200);
-echo 'Webhook received successfully';
+// Run git safely
+$output = [];
+$return_var = 0;
+
+// Make sure Git trusts this directory
+exec('git config --global --add safe.directory /var/www/cybte.com');
+
+// Fetch and reset to remote main branch
+exec('cd /var/www/cybte.com && git fetch --all && git reset --hard origin/main 2>&1', $output, $return_var);
+
+// Log git output
+file_put_contents($deployLog, implode("\n", $output) . "\n\n", FILE_APPEND);
+
+// Return response
+if ($return_var === 0) {
+    http_response_code(200);
+    echo 'Deployment successful';
+} else {
+    http_response_code(500);
+    echo 'Deployment failed';
+}
 ?>
