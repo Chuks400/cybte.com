@@ -47,9 +47,18 @@ if (!hash_equals($expected, $signature)) {
     exit('Unauthorized');
 }
 
+// Debug log
+file_put_contents($debugLog, date('Y-m-d H:i:s') . " - Passed signature\n", FILE_APPEND);
+
 // Only deploy on push to main branch
 $data = json_decode($payload, true);
+if (!$data) {
+    file_put_contents($debugLog, date('Y-m-d H:i:s') . " - Invalid JSON payload\n", FILE_APPEND);
+    http_response_code(400);
+    exit('Invalid payload');
+}
 if (($data['ref'] ?? '') !== 'refs/heads/main') {
+    file_put_contents($debugLog, date('Y-m-d H:i:s') . " - Not main branch: " . ($data['ref'] ?? 'no ref') . "\n", FILE_APPEND);
     exit('Not main branch');
 }
 
@@ -68,11 +77,15 @@ if (!is_dir($repoDir)) {
     exit('Deployment path not found');
 }
 
+file_put_contents($debugLog, date('Y-m-d H:i:s') . " - Starting git operations\n", FILE_APPEND);
+
 // Use git config override to avoid dubious ownership issues
-$gitCommand = 'git -C ' . escapeshellarg($repoDir) . ' -c safe.directory=' . escapeshellarg($repoDir);
+$gitCommand = '/usr/bin/git -C ' . escapeshellarg($repoDir) . ' -c safe.directory=' . escapeshellarg($repoDir);
 exec($gitCommand . ' fetch --all 2>&1', $output, $return_var);
+file_put_contents($debugLog, date('Y-m-d H:i:s') . " - Fetch return: $return_var\n", FILE_APPEND);
 if ($return_var === 0) {
     exec($gitCommand . ' reset --hard origin/main 2>&1', $output, $return_var);
+    file_put_contents($debugLog, date('Y-m-d H:i:s') . " - Reset return: $return_var\n", FILE_APPEND);
 }
 
 // Log git output
