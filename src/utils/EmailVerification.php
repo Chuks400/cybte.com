@@ -79,6 +79,9 @@ class EmailVerification {
      * Send verification email
      */
     public function sendVerificationEmail($email, $token, $name = '') {
+        require_once __DIR__ . '/ResendMailer.php';
+        require_once __DIR__ . '/SmtpMailer.php';
+        
         $verificationUrl = 'https://www.cybte.com/verify_email.php?token=' . $token;
         
         $subject = 'Verify Your Cybte VPN Account';
@@ -125,7 +128,35 @@ class EmailVerification {
 </html>
 HTML;
         
-        // Headers for HTML email
+        // Try Resend first (easiest), then SMTP, then mail()
+        $resend = new ResendMailer();
+        
+        if ($resend->isConfigured()) {
+            error_log('EmailVerification: Trying Resend for ' . $email);
+            $result = $resend->send($email, $subject, $message, true);
+            
+            if ($result) {
+                error_log('EmailVerification: Resend succeeded for ' . $email);
+                return true;
+            }
+            
+            error_log('EmailVerification: Resend failed for ' . $email . ', trying SMTP...');
+        }
+        
+        // Try SMTP
+        $smtpMailer = new SmtpMailer();
+        
+        if ($smtpMailer->isConfigured()) {
+            $result = $smtpMailer->send($email, $subject, $message, true);
+            
+            if ($result) {
+                return true;
+            }
+            
+            error_log('EmailVerification: SMTP send failed for ' . $email . ', falling back to mail()');
+        }
+        
+        // Fallback to PHP mail() (will likely fail on XAMPP without mail server)
         $headers = "From: {$this->fromName} <{$this->fromEmail}>\r\n";
         $headers .= "Reply-To: {$this->fromEmail}\r\n";
         $headers .= "Return-Path: {$this->fromEmail}\r\n";

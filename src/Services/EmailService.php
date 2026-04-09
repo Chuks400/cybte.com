@@ -94,17 +94,30 @@ class EmailService
      */
     private function send(string $to, string $subject, string $body): bool
     {
+        // Try SMTP first
+        require_once __DIR__ . '/../utils/SmtpMailer.php';
+        $smtpMailer = new \SmtpMailer();
+        
+        if ($smtpMailer->isConfigured()) {
+            error_log("EmailService: Sending via SMTP to {$to}: {$subject}");
+            $result = $smtpMailer->send($to, $subject, $body, true);
+            
+            if ($result) {
+                return true;
+            }
+            
+            error_log("EmailService: SMTP failed, falling back to mail()");
+        }
+        
+        // Fallback to mail()
         $headers = "From: {$this->fromName} <{$this->fromEmail}>\r\n";
         $headers .= "Reply-To: {$this->fromEmail}\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
         
-        // Log email for debugging
-        error_log("Sending email to {$to}: {$subject}");
+        error_log("EmailService: Sending via mail() to {$to}: {$subject}");
         
-        // Try to send email
         $result = mail($to, $subject, $body, $headers);
         
-        // If mail() fails, log for retry via queue
         if (!$result) {
             $this->queueEmail($to, $subject, $body);
         }
