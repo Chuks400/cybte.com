@@ -174,7 +174,7 @@ nav a:hover, nav a.active {
     max-width: 980px;
     width: 100%;
     margin: 0 auto;
-    transform: translateY(-50px);
+    transform: translateY(-75px);
 }
 
 .hero-brand .trust,
