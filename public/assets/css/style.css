@@ -157,58 +157,150 @@ nav a:hover, nav a.active {
     box-shadow: 0 5px 15px rgba(0, 229, 255, 0.3);
 }
 
-/* HERO SECTION - FIXED VERSION */
-
+/* Hero Section */
 .hero {
-    padding: 60px 0 80px;
+    padding: 45px 0 90px;
+    text-align: center;
 }
 
 .hero-content {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 50px;
-    align-items: center;
+    gap: 60px;
+    align-items: start;
 }
 
-/* TEXT SIDE */
 .hero-text {
-    max-width: 600px;
+    max-width: 980px;
+    width: 100%;
+    margin: 0 auto;
+    transform: translateY(-95px);
+}
+
+@media (max-width: 768px) {
+    .hero-text {
+        transform: translateY(0) !important;
+    }
+}
+
+.hero-brand .trust,
+.hero-brand .ai {
+    color: #ffffff;
+}
+
+.hero-brand .shield {
+    background: linear-gradient(45deg, #00E5FF, #0099CC);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .hero-text h1 {
-    font-size: 3rem;
-    margin-bottom: 15px;
-    line-height: 1.2;
+    font-size: 4rem;
+    margin-bottom: 20px;
+    text-shadow: 0 0 22px rgba(74, 163, 255, 0.25);
+    font-weight: bold;
 }
 
 .hero-text h2 {
-    font-size: 1.8rem;
-    margin-bottom: 15px;
-    line-height: 1.3;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    background: linear-gradient(45deg, #ffffff, #b0c4de);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.25;
+    max-width: 920px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .hero-text p {
-    font-size: 1.05rem;
-    margin-bottom: 25px;
+    font-size: 1.2rem;
+    color: #b0c4de;
+    margin-bottom: 30px;
+    line-height: 1.8;
+    max-width: 880px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-/* BUTTON */
 .cta-button {
-    padding: 14px 32px;
+    background: linear-gradient(45deg, #00E5FF, #0099CC);
+    color: #0a1929;
+    border: none;
+    padding: 15px 40px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+}
+
+.cta-button:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0, 229, 255, 0.4);
+}
+
+.hero-features {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.feature-badge {
+    background: rgba(31, 41, 55, 0.8);
+    border: 1px solid rgba(0, 229, 255, 0.3);
+    padding: 10px 20px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    color: #00E5FF;
+    backdrop-filter: blur(10px);
+}
+
+.feature-badge i {
     font-size: 1rem;
 }
 
-/* GLOBE SIDE */
 .globe-container {
     display: flex;
     justify-content: center;
     align-items: center;
+     transform: translateX(200px) translateY(100px) scale(1.6); /* +right, -left */
+    height: 400px;
+    position: relative;
+}
+
+@media (max-width: 768px) {
+    .globe-container {
+        transform: translateX(0) translateY(0) scale(1) !important;
+        height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .globe-container {
+        transform: translateX(0) translateY(0) scale(0.7) !important;
+        height: 250px;
+    }
+}
+
+@media (max-width: 375px) {
+    .globe-container {
+        display: none;
+    }
 }
 
 .globe {
-    width: 100%;
-    max-width: 320px;
-    aspect-ratio: 1 / 1;
+    width: 350px;
+    height: 350px;
     border-radius: 50%;
     background-image: url('../images/earth.png');
     background-size: cover;
@@ -223,39 +315,34 @@ nav a:hover, nav a.active {
     z-index: 1;
 }
 
-/* MOBILE FIX (VERY IMPORTANT) */
-@media (max-width: 768px) {
+@keyframes globe-halo {
+    0%, 100% { transform: scale(1); opacity: 0.85; }
+    50% { transform: scale(1.03); opacity: 1; }
+}
 
-    .hero-content {
-        grid-template-columns: 1fr;
-        text-align: center;
-    }
 
-    .hero-text {
-        max-width: 100%;
-    }
 
-    .hero-text h1 {
-        font-size: 2.2rem;
-    }
+@keyframes clouds-drift {
+    from { transform: translate3d(0, 0, 0) scale(1.02); }
+    to { transform: translate3d(-18px, 10px, 0) scale(1.06); }
+}
 
-    .hero-text h2 {
-        font-size: 1.4rem;
-    }
+@keyframes atmosphere-breathe {
+    0%, 100% { opacity: 0.85; }
+    50% { opacity: 1; }
+}
 
-    .hero-text p {
-        font-size: 0.95rem;
-    }
+.globe i {
+    font-size: 6rem;
+    color: #ffffff;
+    z-index: 10;
+    position: relative;
+    opacity: 0;
+}
 
-    .cta-button {
-        width: 100%;
-        max-width: 260px;
-    }
-
-    .globe {
-        max-width: 220px;
-        margin-top: 20px;
-    }
+@keyframes rotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .hero-brand .trust,
