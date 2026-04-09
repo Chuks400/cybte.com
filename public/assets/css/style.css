@@ -298,20 +298,6 @@ nav a:hover, nav a.active {
     }
 }
 
-.globe-container::before {
-    content: '';
-    position: absolute;
-    width: 520px;
-    height: 520px;
-    border-radius: 50%;
-    background:
-        radial-gradient(circle at 50% 50%, rgba(74, 163, 255, 0.22) 0%, rgba(74, 163, 255, 0.12) 22%, rgba(74, 163, 255, 0.06) 38%, rgba(74, 163, 255, 0.0) 62%);
-    filter: blur(0.2px);
-    opacity: 0.95;
-    z-index: 0;
-    animation: globe-halo 4.5s ease-in-out infinite;
-}
-
 .globe {
     width: 350px;
     height: 350px;
