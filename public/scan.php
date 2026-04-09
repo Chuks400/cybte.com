@@ -13,6 +13,8 @@ if(!isset($_SESSION['user_id'])){
 <head>
 
 <title>Security Scanner</title>
+<link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
 
 <link rel="stylesheet" href="assets/css/style.css">
 

@@ -24,6 +24,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
 
 <title>Users - CYBTE AI</title>
+<link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
 
 <link rel="stylesheet" href="assets/css/style.css">
 
