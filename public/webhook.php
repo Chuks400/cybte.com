@@ -60,12 +60,20 @@ file_put_contents($deployLog, date('Y-m-d H:i:s') . " - Deploy triggered by $tri
 // Run git safely
 $output = [];
 $return_var = 0;
+$repoDir = '/var/www/cybte.com';
 
-// Make sure Git trusts this directory
-exec('git config --global --add safe.directory /var/www/cybte.com');
+if (!is_dir($repoDir)) {
+    file_put_contents($deployLog, date('Y-m-d H:i:s') . " - Repository path not found: $repoDir\n", FILE_APPEND);
+    http_response_code(500);
+    exit('Deployment path not found');
+}
 
-// Fetch and reset to remote main branch
-exec('cd /var/www/cybte.com && git fetch --all && git reset --hard origin/main 2>&1', $output, $return_var);
+// Use git config override to avoid dubious ownership issues
+$gitCommand = 'git -C ' . escapeshellarg($repoDir) . ' -c safe.directory=' . escapeshellarg($repoDir);
+exec($gitCommand . ' fetch --all 2>&1', $output, $return_var);
+if ($return_var === 0) {
+    exec($gitCommand . ' reset --hard origin/main 2>&1', $output, $return_var);
+}
 
 // Log git output
 file_put_contents($deployLog, implode("\n", $output) . "\n\n", FILE_APPEND);
