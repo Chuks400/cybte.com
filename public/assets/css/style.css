@@ -302,14 +302,10 @@ nav a:hover, nav a.active {
     width: 350px;
     height: 350px;
     border-radius: 50%;
-    background-image:
-        radial-gradient(circle at 30% 22%, rgba(255, 255, 255, 0.22), rgba(255, 255, 255, 0.0) 42%),
-        radial-gradient(circle at 78% 72%, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0.0) 56%),
-        url('../images/earth.png');
-    background-size: 100% 100%, 100% 100%, cover;
+    background-image: url('../images/earth.png');
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-blend-mode: screen, multiply, normal;
     display: flex;
     justify-content: center;
     align-items: center;
