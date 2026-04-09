@@ -18,17 +18,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 <head>
 
-<<<<<<< HEAD
-<link rel="icon" type="image/jpeg" href="assets/images/favicon.png">
-<link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.png">
-
-<title>Log In - TrustShield VPN</title>
-=======
 <title>Log In - Cybte VPN</title>
 
-<link rel="icon" type="image/jpeg" href="assets/images/favicon.jpg">
-<link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.jpg">
->>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
+<link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -44,11 +37,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="container">
 <div class="header-content">
 <div class="logo">
-<<<<<<< HEAD
-<a href="vpn.php"><img src="assets/images/logo.png" alt="TrustShield AI Logo" class="logo-img"></a>
-=======
 <a href="vpn.php"><img src="assets/images/logo.png" alt="Cybte AI Logo" class="logo-img"></a>
->>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
 </div>
 <nav>
 <a href="vpn.php">Home</a>

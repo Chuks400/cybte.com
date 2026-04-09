@@ -19,14 +19,10 @@ if(isset($_SESSION['user_id'])){
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<<<<<<< HEAD
-<link rel="icon" type="image/jpeg" href="assets/images/favicon.png">
-<link rel="shortcut icon" type="image/jpeg" href="assets/images/favicon.png">
-
-<title>TrustShield VPN - Privacy & Secure Access</title>
-=======
 <title>Cybte VPN - Privacy & Secure Access</title>
->>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
+
+<link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
+<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
 
 <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css?v=2">
@@ -41,11 +37,7 @@ if(isset($_SESSION['user_id'])){
 <div class="container">
 <div class="header-content">
 <div class="logo">
-<<<<<<< HEAD
-<a href="index.php"><img src="assets/images/logo.png" alt="TrustShield AI Logo" class="logo-img"></a>
-=======
 <a href="index.php"><img src="assets/images/logo.png" alt="Cybte AI Logo" class="logo-img"></a>
->>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
 </div>
 <nav>
 <a href="vpn.php" class="active">Home</a>
