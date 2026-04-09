@@ -36,8 +36,7 @@ file_put_contents(__DIR__ . '/logs/deploy.log', $log, FILE_APPEND);
 // Run git pull
 $output = [];
 $return_var = 0;
-exec('cd /var/www/cybte.com && git pull origin main 2>&1', $output, $return_var);
-
+exec('cd /var/www/cybte.com && git fetch --all && git reset --hard origin/main 2>&1', $output, $return_var);
 // Log output
 file_put_contents(__DIR__ . '/logs/deploy.log', implode("\n", $output) . "\n\n", FILE_APPEND);
 
