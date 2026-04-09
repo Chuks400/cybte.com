@@ -345,75 +345,6 @@ nav a:hover, nav a.active {
     to { transform: rotate(360deg); }
 }
 
-.hero-brand .trust,
-.hero-brand .ai {
-    color: #ffffff;
-}
-
-.hero-brand .shield {
-    background: linear-gradient(45deg, #00E5FF, #0099CC);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-.hero-features {
-    display: flex;
-    gap: 20px;
-    justify-content: center;
-    flex-wrap: wrap;
-}
-
-.feature-badge {
-    background: rgba(31, 41, 55, 0.8);
-    border: 1px solid rgba(0, 229, 255, 0.3);
-    padding: 10px 20px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 0.9rem;
-    color: #00E5FF;
-    backdrop-filter: blur(10px);
-}
-
-.feature-badge i {
-    font-size: 1rem;
-}
-
-.cta-button {
-    background: linear-gradient(45deg, #00E5FF, #0099CC);
-    color: #0a1929;
-    border: none;
-    padding: 14px 32px;
-    font-size: 1rem;
-    font-weight: bold;
-    border-radius: 30px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    margin-bottom: 30px;
-}
-
-.cta-button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 10px 25px rgba(0, 229, 255, 0.4);
-}
-
-.globe i {
-    font-size: 6rem;
-    color: #ffffff;
-    z-index: 10;
-    position: relative;
-    opacity: 0;
-}
-
-@keyframes rotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
 /* Solutions Section */
 .solutions {
     padding: 80px 0;
@@ -2322,7 +2253,25 @@ grid-template-columns: 1fr;
     }
     
     .footer-content {
-        grid-template-columns: 1fr;
+        display: flex;
+        flex-wrap: nowrap;
+        gap: 20px;
+        overflow-x: auto;
+        padding-bottom: 10px;
+    }
+    
+    .footer-content::-webkit-scrollbar {
+        height: 8px;
+    }
+    
+    .footer-content::-webkit-scrollbar-thumb {
+        background: rgba(0, 229, 255, 0.25);
+        border-radius: 999px;
+    }
+    
+    .footer-section {
+        min-width: 220px;
+        flex: 0 0 auto;
     }
 }
 
