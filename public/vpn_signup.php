@@ -72,6 +72,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 // Send email verification
                 $emailVerify = new EmailVerification($conn);
                 $token = $emailVerify->generateToken();
+                $emailSent = false;
                 
                 if ($emailVerify->saveToken($newUserId, $email, $token)) {
                     $emailSent = $emailVerify->sendVerificationEmail($email, $token, $name);
@@ -79,6 +80,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     if (!$emailSent) {
                         error_log('EmailVerification: Failed to send verification email to ' . $email);
                     }
+                } else {
+                    error_log('EmailVerification: Could not save verification token for user ' . $newUserId);
                 }
 
                 // Create real VPN account via 3x-ui API
@@ -89,8 +92,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     error_log('VPNService: Failed to create VPN account for user ' . $newUserId);
                 }
 
-                // Redirect to verification pending page
-                header('Location: verification_pending.php?email=' . urlencode($email));
+                // Redirect to verification pending page with email delivery status
+                header('Location: verification_pending.php?email=' . urlencode($email) . '&sent=' . ($emailSent ? '1' : '0'));
                 exit();
             } else {
                 $error = 'Could not create account.';

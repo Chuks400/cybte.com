@@ -5,6 +5,8 @@
  */
 
 $email = $_GET['email'] ?? '';
+$sent = isset($_GET['sent']) ? (bool) $_GET['sent'] : true;
+$status = $_GET['status'] ?? '';
 ?>
 <!DOCTYPE html>
 <html>
@@ -128,13 +130,37 @@ $email = $_GET['email'] ?? '';
             </ul>
         </div>
         
+        <?php if ($status === 'resent'): ?>
+        <div class="spam-notice" style="background: rgba(68, 204, 68, 0.1); border-color: rgba(68, 204, 68, 0.3); color: #a6ffb8;">
+            <i class="fas fa-check-circle"></i>
+            Verification email resent successfully. Please check your inbox.
+        </div>
+        <?php elseif ($status === 'already_verified'): ?>
+        <div class="spam-notice" style="background: rgba(0, 212, 255, 0.1); border-color: rgba(0, 212, 255, 0.3); color: #c4f0ff;">
+            <i class="fas fa-info-circle"></i>
+            Your email has already been verified. Please log in to continue.
+        </div>
+        <?php elseif ($status === 'resent_failed' || $status === 'error'): ?>
+        <div class="spam-notice" style="background: rgba(255, 68, 68, 0.08); border-color: rgba(255, 68, 68, 0.3); color: #ff9b9b;">
+            <i class="fas fa-exclamation-circle"></i>
+            We could not resend your verification email right now. Please try again later or contact support.
+        </div>
+        <?php elseif (!$sent): ?>
+        <div class="spam-notice" style="background: rgba(255, 68, 68, 0.08); border-color: rgba(255, 68, 68, 0.3); color: #ff9b9b;">
+            <i class="fas fa-exclamation-circle"></i>
+            We were unable to send your verification email automatically. Please try resending or contact support.
+        </div>
+        <?php else: ?>
         <div class="spam-notice">
             <i class="fas fa-exclamation-triangle"></i>
             Can't find the email? Check your spam/junk folder!
         </div>
+        <?php endif; ?>
         
-        <br><br>
-        
+        <br>
+        <a href="resend_verification.php?email=<?php echo urlencode($email); ?>" class="btn-primary">
+            <i class="fas fa-envelope-circle-check"></i> Resend Verification Email
+        </a>
         <a href="vpn_login.php" class="btn-primary">
             <i class="fas fa-right-to-bracket"></i> Go to Login
         </a>

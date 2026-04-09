@@ -128,10 +128,37 @@ HTML;
         // Headers for HTML email
         $headers = "From: {$this->fromName} <{$this->fromEmail}>\r\n";
         $headers .= "Reply-To: {$this->fromEmail}\r\n";
+        $headers .= "Return-Path: {$this->fromEmail}\r\n";
         $headers .= "MIME-Version: 1.0\r\n";
         $headers .= "Content-Type: text/html; charset=UTF-8\r\n";
+        $headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
         
-        return mail($email, $subject, $message, $headers);
+        $result = mail($email, $subject, $message, $headers, '-f' . $this->fromEmail);
+        
+        if (!$result) {
+            error_log('EmailVerification: mail() failed for ' . $email . ' with token ' . $token);
+            $this->queueEmail($email, $subject, $message);
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Queue an email for later retry if mail() fails
+     */
+    private function queueEmail($email, $subject, $message) {
+        try {
+            $stmt = $this->conn->prepare(
+                "INSERT INTO email_queue (to_email, subject, body, status, created_at) VALUES (:to_email, :subject, :body, 'pending', NOW())"
+            );
+            $stmt->execute([
+                ':to_email' => $email,
+                ':subject' => $subject,
+                ':body' => $message
+            ]);
+        } catch (Exception $e) {
+            error_log('EmailVerification: Failed to queue email for ' . $email . ' - ' . $e->getMessage());
+        }
     }
     
     /**
