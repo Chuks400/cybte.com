@@ -183,8 +183,10 @@ nav a:hover, nav a.active {
 }
 
 .hero-brand .shield {
-    color: #4aa3ff;
-    text-shadow: 0 0 18px rgba(74, 163, 255, 0.35);
+    background: linear-gradient(45deg, #00E5FF, #0099CC);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .hero-text h1 {
