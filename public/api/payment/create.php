@@ -23,6 +23,9 @@ error_log("[PAYMENT] Create request started - User: " . ($_SESSION['user_id'] ??
 
 try {
     require_once __DIR__ . '/../../../src/config/database.php';
+    require_once __DIR__ . '/../../../src/Payment/PaymentInterface.php';
+    require_once __DIR__ . '/../../../src/Payment/Alipay.php';
+    require_once __DIR__ . '/../../../src/Payment/WeChatPay.php';
     require_once __DIR__ . '/../../../src/Payment/PaymentFactory.php';
     error_log("[PAYMENT] Files loaded successfully");
 } catch (Throwable $e) {

@@ -8,6 +8,9 @@ session_start();
 header('Content-Type: application/json');
 
 require_once __DIR__ . '/../../../src/config/database.php';
+require_once __DIR__ . '/../../../src/Payment/PaymentInterface.php';
+require_once __DIR__ . '/../../../src/Payment/Alipay.php';
+require_once __DIR__ . '/../../../src/Payment/WeChatPay.php';
 require_once __DIR__ . '/../../../src/Payment/PaymentFactory.php';
 
 use Cybte\Payment\PaymentFactory;

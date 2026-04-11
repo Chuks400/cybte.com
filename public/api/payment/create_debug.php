@@ -25,6 +25,9 @@ if (isset($_SESSION['user_id'])) {
 echo "\nStep 2: Loading required files...\n";
 $files = [
     __DIR__ . '/../../../src/config/database.php',
+    __DIR__ . '/../../../src/Payment/PaymentInterface.php',
+    __DIR__ . '/../../../src/Payment/Alipay.php',
+    __DIR__ . '/../../../src/Payment/WeChatPay.php',
     __DIR__ . '/../../../src/Payment/PaymentFactory.php',
 ];
 
