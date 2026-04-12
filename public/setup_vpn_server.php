@@ -114,6 +114,24 @@ $serverConfig = [
 ];
 
 try {
+    // Ensure the vpn_servers table has the required 3x-ui columns
+    $conn->exec("
+        ALTER TABLE vpn_servers
+            ADD COLUMN IF NOT EXISTS country VARCHAR(2) NULL AFTER location,
+            ADD COLUMN IF NOT EXISTS flag VARCHAR(10) NULL AFTER country,
+            ADD COLUMN IF NOT EXISTS panel_type VARCHAR(20) NOT NULL DEFAULT '3x-ui' AFTER flag,
+            ADD COLUMN IF NOT EXISTS api_url VARCHAR(255) NULL AFTER panel_type,
+            ADD COLUMN IF NOT EXISTS api_token VARCHAR(255) NULL AFTER api_url,
+            ADD COLUMN IF NOT EXISTS api_username VARCHAR(100) NULL AFTER api_token,
+            ADD COLUMN IF NOT EXISTS api_password VARCHAR(255) NULL AFTER api_username,
+            ADD COLUMN IF NOT EXISTS inbound_id INT DEFAULT 1 AFTER api_password,
+            ADD COLUMN IF NOT EXISTS protocol VARCHAR(20) DEFAULT 'vless' AFTER inbound_id,
+            ADD COLUMN IF NOT EXISTS domain VARCHAR(255) NULL AFTER protocol,
+            ADD COLUMN IF NOT EXISTS use_https TINYINT(1) DEFAULT 0 AFTER domain,
+            ADD COLUMN IF NOT EXISTS panel_port VARCHAR(10) NULL AFTER use_https,
+            ADD COLUMN IF NOT EXISTS web_base_path VARCHAR(255) NULL AFTER panel_port
+    ");
+
     // Check if server already exists
     $stmt = $conn->prepare("SELECT id FROM vpn_servers WHERE ip_address = :ip");
     $stmt->bindParam(':ip', $serverConfig['ip_address']);
