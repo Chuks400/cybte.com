@@ -141,6 +141,9 @@ try {
         echo "Server with IP {$serverConfig['ip_address']} already exists.\n";
         
         // Update existing server
+        $params = $serverConfig;
+        unset($params['ssh_key_path']);
+
         $stmt = $conn->prepare("
             UPDATE vpn_servers SET
                 name = :name,
@@ -160,10 +163,13 @@ try {
             WHERE ip_address = :ip_address
         ");
         
-        $stmt->execute($serverConfig);
+        $stmt->execute($params);
         echo "✓ Server updated successfully!\n";
     } else {
         // Insert new server
+        $params = $serverConfig;
+        unset($params['ssh_key_path']);
+
         $stmt = $conn->prepare("
             INSERT INTO vpn_servers 
             (name, location, country, flag, ip_address, status, load_percent, panel_type, api_url, 
@@ -173,7 +179,7 @@ try {
              :api_username, :api_password, :inbound_id, :protocol, :domain, :use_https, :panel_port, :web_base_path)
         ");
         
-        $stmt->execute($serverConfig);
+        $stmt->execute($params);
         echo "✓ Server added successfully with ID: " . $conn->lastInsertId() . "\n";
     }
     
