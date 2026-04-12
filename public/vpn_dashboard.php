@@ -35,13 +35,38 @@ $serverInfo = null;
 // Handle subscription reset via VPN service
 if($conn && isset($_POST['reset_link']) && $userId > 0){
     $vpnService = new VPNService($conn);
-    $newAccount = $vpnService->resetSubscriptionLink($userId);
+
+    // Check if user has an existing account
+    $existingAccount = $vpnService->getUserAccount($userId);
+
+    if($existingAccount){
+        // Reset existing link
+        $newAccount = $vpnService->resetSubscriptionLink($userId);
+    } else {
+        // No account exists - create one based on subscription plan
+        $newAccount = $vpnService->createAccount($userId, null, $subscriptionPlan);
+    }
+
     if($newAccount){
         $subscriptionLink = $newAccount['subscription_link'];
         header('Location: vpn_dashboard.php');
         exit();
     } else {
-        $dbError = 'Failed to reset subscription link. Please try again.';
+        // Get detailed error from error log
+        $dbError = 'Failed to generate subscription link. ';
+
+        // Check if servers exist
+        $servers = $vpnService->getServers();
+        if(empty($servers)){
+            $dbError .= 'No active VPN servers configured. ';
+        }
+
+        // Check subscription status
+        if($subscriptionStatus !== 'active'){
+            $dbError .= 'Subscription status is ' . $subscriptionStatus . '. ';
+        }
+
+        $dbError .= 'Please contact support.';
     }
 }
 
