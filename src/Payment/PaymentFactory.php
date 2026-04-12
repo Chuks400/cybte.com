@@ -17,6 +17,7 @@ class PaymentFactory
         'alipay' => Alipay::class,
         'wechat' => WeChatPay::class,
         'wechatpay' => WeChatPay::class,
+        'paypal' => PayPal::class,
     ];
 
     /**

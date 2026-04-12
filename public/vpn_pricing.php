@@ -203,6 +203,20 @@ try {
                         </div>
                         <div class="pay-check"><i class="fas fa-check-circle"></i></div>
                     </div>
+                    
+                    <div class="pay-card" onclick="selectPayment('paypal')" id="paypalCard">
+                        <div class="pay-icon">
+                            <svg viewBox="0 0 24 24" width="32" height="32">
+                                <rect fill="#003087" width="24" height="24" rx="4"/>
+                                <text fill="white" x="12" y="17" text-anchor="middle" font-size="10" font-weight="bold">PP</text>
+                            </svg>
+                        </div>
+                        <div class="pay-info">
+                            <span class="pay-name">PayPal</span>
+                            <span class="pay-desc">Credit Card / PayPal</span>
+                        </div>
+                        <div class="pay-check"><i class="fas fa-check-circle"></i></div>
+                    </div>
                 </div>
             </div>
             
@@ -267,7 +281,14 @@ function selectPayment(method) {
         card.classList.remove('selected');
     });
     document.getElementById(method + 'Card').classList.add('selected');
-    document.getElementById('qrApp').textContent = method === 'alipay' ? 'Alipay' : 'WeChat';
+    
+    // Update QR/App text based on method
+    const appNames = {
+        'alipay': 'Alipay',
+        'wechat': 'WeChat',
+        'paypal': 'PayPal'
+    };
+    document.getElementById('qrApp').textContent = appNames[method] || 'App';
 }
 
 function resetQR() {
@@ -294,6 +315,14 @@ function createPayment() {
     .then(data => {
         if (data.success) {
             orderId = data.order_id;
+            
+            // For PayPal, redirect to PayPal checkout
+            if (selectedMethod === 'paypal' && data.qr_url && data.qr_url.includes('paypal.com')) {
+                window.location.href = data.qr_url;
+                return;
+            }
+            
+            // For Alipay/WeChat, show QR code
             document.getElementById('paymentQR').src = data.qr_url;
             document.getElementById('qrSection').style.display = 'block';
             document.getElementById('confirmBtn').style.display = 'none';

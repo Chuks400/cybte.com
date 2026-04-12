@@ -23,11 +23,16 @@ class WeChatPay implements PaymentInterface
      */
     public function __construct(array $config = [])
     {
+        // Read from environment (set via .env file using putenv)
+        $airwallexMode = getenv('AIRWALLEX_MODE') ?: 'sandbox';
+        
         $this->config = array_merge([
-            'mode' => $_ENV['WECHATPAY_MODE'] ?? 'fake',
-            'airwallex_client_id' => $_ENV['AIRWALLEX_CLIENT_ID'] ?? '',
-            'airwallex_api_key' => $_ENV['AIRWALLEX_API_KEY'] ?? '',
-            'airwallex_base_url' => 'https://api.airwallex.com/api/v1',
+            'mode' => $config['mode'] ?? ($airwallexMode === 'production' ? 'airwallex' : 'fake'),
+            'airwallex_client_id' => getenv('AIRWALLEX_CLIENT_ID') ?: '',
+            'airwallex_api_key' => getenv('AIRWALLEX_API_KEY') ?: '',
+            'airwallex_base_url' => $airwallexMode === 'production' 
+                ? 'https://api.airwallex.com/api/v1' 
+                : 'https://api-demo.airwallex.com/api/v1',
         ], $config);
 
         $this->mode = $this->config['mode'];
