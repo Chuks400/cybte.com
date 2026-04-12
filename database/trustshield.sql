@@ -1,7 +1,4 @@
-<<<<<<< HEAD
-=======
-CREATE DATABASE cybte;
->>>>>>> b9e31d2449ffc6d9f4c81f1e61f200ba68fe3f45
+CREATE DATABASE IF NOT EXISTS cybte CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 USE cybte;
 

@@ -10,14 +10,84 @@ header('Content-Type: text/plain');
 
 echo "=== VPN Server Setup ===\n\n";
 
+function getDbConfig(): array {
+    return [
+        'host' => getenv('DB_HOST') ?: '127.0.0.1',
+        'port' => getenv('DB_PORT') ?: '3308',
+        'username' => getenv('DB_USER') ?: 'root',
+        'password' => getenv('DB_PASS') ?: 'Cjohn22@',
+        'dbname' => getenv('DB_NAME') ?: 'cybte',
+    ];
+}
+
+function connectToMysqlServer(array $config): PDO {
+    $ports = [$config['port']];
+    if ((int)$config['port'] === 3308) {
+        $ports[] = 3306;
+    }
+
+    foreach ($ports as $port) {
+        try {
+            $pdo = new PDO(
+                "mysql:host={$config['host']};port={$port};charset=utf8mb4",
+                $config['username'],
+                $config['password']
+            );
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            return $pdo;
+        } catch (PDOException $e) {
+            $lastError = $e->getMessage();
+        }
+    }
+
+    throw new RuntimeException("Could not connect to MySQL server: {$lastError}");
+}
+
+function importSqlFile(PDO $pdo, string $sqlFile, string $dbName): void {
+    if (!file_exists($sqlFile)) {
+        throw new RuntimeException('SQL schema file not found: ' . $sqlFile);
+    }
+
+    $sql = file_get_contents($sqlFile);
+    $sql = preg_replace('/^\s*(CREATE DATABASE|USE) .*$/mi', '', $sql);
+    $statements = array_filter(array_map('trim', explode(';', $sql)));
+
+    $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$dbName}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+    $pdo->exec("USE `{$dbName}`");
+
+    foreach ($statements as $statement) {
+        if ($statement === '' || preg_match('/^\s*(--|\/\*)/', $statement)) {
+            continue;
+        }
+        $pdo->exec($statement);
+    }
+}
+
 try {
     $database = new Database();
     $conn = $database->connect();
     echo "✓ Database connected\n\n";
 } catch (Exception $e) {
-    echo "✗ Database connection failed: " . $e->getMessage() . "\n";
-    echo "Last error: " . $database->getLastError() . "\n";
-    exit;
+    $lastError = $database->getLastError();
+    if (stripos($lastError, 'Unknown database') !== false || stripos($e->getMessage(), 'Unknown database') !== false) {
+        echo "Database missing, creating schema...\n";
+        $dbConfig = getDbConfig();
+
+        try {
+            $mysql = connectToMysqlServer($dbConfig);
+            importSqlFile($mysql, __DIR__ . '/../database/trustshield.sql', $dbConfig['dbname']);
+            echo "✓ Database created and schema imported. Reconnecting...\n\n";
+            $conn = $database->connect();
+            echo "✓ Database connected\n\n";
+        } catch (Exception $createException) {
+            echo "✗ Failed to create database/schema: " . $createException->getMessage() . "\n";
+            exit;
+        }
+    } else {
+        echo "✗ Database connection failed: " . $e->getMessage() . "\n";
+        echo "Last error: " . $lastError . "\n";
+        exit;
+    }
 }
 
 // VPS Configuration
