@@ -36,6 +36,27 @@ $serverInfo = null;
 if($conn && isset($_POST['reset_link']) && $userId > 0){
     $vpnService = new VPNService($conn);
 
+    // Auto-create subscription if none exists (for trial users)
+    if($subscriptionStatus !== 'active'){
+        $startDate = date('Y-m-d H:i:s');
+        $expiryDate = date('Y-m-d H:i:s', strtotime('+7 days')); // 7 days for trial
+        $newStatus = 'active';
+        $plan = 'trial';
+
+        $stmt = $conn->prepare("INSERT INTO subscriptions (user_id, plan, service_type, start_date, expiry_date, status) VALUES (:user_id, :plan, 'vpn', :start_date, :expiry_date, :status)");
+        $stmt->bindParam(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindParam(':plan', $plan);
+        $stmt->bindParam(':start_date', $startDate);
+        $stmt->bindParam(':expiry_date', $expiryDate);
+        $stmt->bindParam(':status', $newStatus);
+        $stmt->execute();
+
+        // Refresh subscription status
+        $subscriptionStatus = 'active';
+        $subscriptionPlan = $plan;
+        $subscriptionExpiry = $expiryDate;
+    }
+
     // Check if user has an existing account
     $existingAccount = $vpnService->getUserAccount($userId);
 
@@ -59,11 +80,6 @@ if($conn && isset($_POST['reset_link']) && $userId > 0){
         $servers = $vpnService->getServers();
         if(empty($servers)){
             $dbError .= 'No active VPN servers configured. ';
-        }
-
-        // Check subscription status
-        if($subscriptionStatus !== 'active'){
-            $dbError .= 'Subscription status is ' . $subscriptionStatus . '. ';
         }
 
         $dbError .= 'Please contact support.';
