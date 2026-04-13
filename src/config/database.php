@@ -78,12 +78,19 @@ class Database {
         foreach($hostsToTry as $host){
             foreach($portsToTry as $port){
                 try{
-                    $this->conn = new PDO(
-                        "mysql:host=".$host.";port=".$port.";dbname=".$this->db_name.";charset=utf8mb4",
-                        $this->username,
-                        $this->password
-                    );
-
+                    // For localhost, try socket connection first (avoids TCP SSL issues)
+                    if($host === '127.0.0.1' || $host === 'localhost'){
+                        $socket = 'C:/xampp/mysql/mysql.sock';
+                        if(file_exists($socket)){
+                            $dsn = "mysql:unix_socket=$socket;dbname=".$this->db_name.";charset=utf8mb4";
+                        } else {
+                            $dsn = "mysql:host=$host;port=$port;dbname=".$this->db_name.";charset=utf8mb4";
+                        }
+                    } else {
+                        $dsn = "mysql:host=$host;port=$port;dbname=".$this->db_name.";charset=utf8mb4";
+                    }
+                    
+                    $this->conn = new PDO($dsn, $this->username, $this->password);
                     $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                     return $this->conn;
                 }catch(PDOException $e){
