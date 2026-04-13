@@ -15,6 +15,19 @@ class Database {
         return $this->lastError;
     }
 
+    private function requireEnvFile(): void {
+        $envFile = __DIR__ . '/../../.env';
+        if (!file_exists($envFile)) {
+            return;
+        }
+
+        try {
+            require_once $envFile;
+        } catch (Throwable $e) {
+            // If .env cannot be executed, fall back to parsing.
+        }
+    }
+
     private function parseEnvFile(): array {
         $envFile = __DIR__ . '/../../.env';
         $values = [];
@@ -26,12 +39,21 @@ class Database {
         $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
         foreach ($lines as $line) {
             $line = trim($line);
-            if ($line === '' || str_starts_with($line, '#') || str_starts_with($line, '//')) {
+            if ($line === '' || str_starts_with($line, '#') || str_starts_with($line, '//') || str_starts_with($line, '<?php') || str_starts_with($line, '?>')) {
                 continue;
             }
 
-            if (preg_match('/putenv\s*\(\s*["\']([^=]+)=([^"\']*)["\']\s*\)/', $line, $matches)) {
+            if (preg_match('/putenv\s*\(\s*["\']([^=]+)=([^"\']*)["\']\s*\)/i', $line, $matches)) {
                 $values[$matches[1]] = $matches[2];
+                continue;
+            }
+
+            if (preg_match('/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/', $line, $matches)) {
+                $value = trim($matches[2]);
+                if ((str_starts_with($value, '"') && str_ends_with($value, '"')) || (str_starts_with($value, "'") && str_ends_with($value, "'"))) {
+                    $value = substr($value, 1, -1);
+                }
+                $values[$matches[1]] = $value;
             }
         }
 
@@ -39,6 +61,7 @@ class Database {
     }
 
     private function loadEnvCredentials() {
+        $this->requireEnvFile();
         $envValues = $this->parseEnvFile();
 
         $envHost = getenv('DB_HOST');

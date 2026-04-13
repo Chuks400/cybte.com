@@ -35,12 +35,28 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $passProp = $reflection->getProperty('password');
             $passProp->setAccessible(true);
             $actualPass = $passProp->getValue($database);
+
+            $hostProp = $reflection->getProperty('host');
+            $hostProp->setAccessible(true);
+            $actualHost = $hostProp->getValue($database);
+
+            $portProp = $reflection->getProperty('port');
+            $portProp->setAccessible(true);
+            $actualPort = $portProp->getValue($database);
+
+            $userProp = $reflection->getProperty('username');
+            $userProp->setAccessible(true);
+            $actualUser = $userProp->getValue($database);
+
             $error .= ' | Last DB Error: ' . $database->getLastError();
             $error .= ' | Pass length: ' . strlen($actualPass);
             $error .= ' | Pass empty: ' . ($actualPass === '' ? 'YES' : 'NO');
-            $error .= ' | DB_HOST: ' . (getenv('DB_HOST') ?: 'not set');
-            $error .= ' | DB_PORT: ' . (getenv('DB_PORT') ?: 'not set');
-            $error .= ' | DB_USER: ' . (getenv('DB_USER') ?: 'not set');
+            $error .= ' | Env DB_HOST: ' . (getenv('DB_HOST') ?: 'not set');
+            $error .= ' | Env DB_PORT: ' . (getenv('DB_PORT') ?: 'not set');
+            $error .= ' | Env DB_USER: ' . (getenv('DB_USER') ?: 'not set');
+            $error .= ' | Loaded DB_HOST: ' . ($actualHost ?: 'not set');
+            $error .= ' | Loaded DB_PORT: ' . ($actualPort ?: 'not set');
+            $error .= ' | Loaded DB_USER: ' . ($actualUser ?: 'not set');
         }
 
         if($conn){
