@@ -1,8 +1,10 @@
 <?php
-// Load environment variables
-if (file_exists(__DIR__ . '/../../.env')) {
-    require_once __DIR__ . '/../../.env';
+// Load environment variables - use require not require_once to ensure putenv() executes
+$envFile = __DIR__ . '/../../.env';
+if (file_exists($envFile)) {
+    require $envFile;
 }
+
 class Database {
 
     private $host = "127.0.0.1";
@@ -23,6 +25,12 @@ class Database {
 
         $this->conn = null;
         $this->lastError = null;
+
+        // Ensure .env is loaded (fallback for require caching)
+        $envFile = __DIR__ . '/../../.env';
+        if (file_exists($envFile)) {
+            require $envFile;
+        }
 
         $envHost = getenv('DB_HOST');
         $envName = getenv('DB_NAME');
