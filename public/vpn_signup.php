@@ -30,11 +30,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         } catch (Throwable $e) {
             $conn = null;
             $error = 'Database error: ' . $e->getMessage();
-            // Debug info
+            // Debug info - check what's in the Database object
+            $reflection = new ReflectionClass($database);
+            $passProp = $reflection->getProperty('password');
+            $passProp->setAccessible(true);
+            $actualPass = $passProp->getValue($database);
             $error .= ' | Last DB Error: ' . $database->getLastError();
-            $error .= ' | DB_HOST: ' . (getenv('DB_HOST') ?: '127.0.0.1');
-            $error .= ' | DB_USER: ' . (getenv('DB_USER') ?: 'root');
-            $error .= ' | Env loaded: ' . (file_exists(__DIR__ . '/../.env') ? 'YES' : 'NO');
+            $error .= ' | Pass length: ' . strlen($actualPass);
+            $error .= ' | Pass empty: ' . ($actualPass === '' ? 'YES' : 'NO');
         }
 
         if($conn){
