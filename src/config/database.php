@@ -41,19 +41,27 @@ class Database {
             $portsToTry[] = 3306;
         }
 
-        foreach($portsToTry as $port){
-            try{
-                $this->conn = new PDO(
-                    "mysql:host=".$this->host.";port=".$port.";dbname=".$this->db_name.";charset=utf8mb4",
-                    $this->username,
-                    $this->password
-                );
+        $hostsToTry = [$this->host];
+        // Add localhost fallback for 127.0.0.1 TCP issues
+        if($this->host === '127.0.0.1'){
+            $hostsToTry[] = 'localhost';
+        }
 
-                $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                return $this->conn;
-            }catch(PDOException $e){
-                $this->lastError = $e->getMessage();
-                $this->conn = null;
+        foreach($hostsToTry as $host){
+            foreach($portsToTry as $port){
+                try{
+                    $this->conn = new PDO(
+                        "mysql:host=".$host.";port=".$port.";dbname=".$this->db_name.";charset=utf8mb4",
+                        $this->username,
+                        $this->password
+                    );
+
+                    $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                    return $this->conn;
+                }catch(PDOException $e){
+                    $this->lastError = $e->getMessage();
+                    $this->conn = null;
+                }
             }
         }
 

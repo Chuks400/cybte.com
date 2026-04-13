@@ -32,7 +32,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $error = 'Database error: ' . $e->getMessage();
             // Debug info
             $error .= ' | Last DB Error: ' . $database->getLastError();
-            $error .= ' | DB_HOST: ' . getenv('DB_HOST');
+            $error .= ' | DB_HOST: ' . (getenv('DB_HOST') ?: '127.0.0.1');
+            $error .= ' | DB_USER: ' . (getenv('DB_USER') ?: 'root');
             $error .= ' | Env loaded: ' . (file_exists(__DIR__ . '/../.env') ? 'YES' : 'NO');
         }
 
