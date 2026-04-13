@@ -38,6 +38,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $error .= ' | Last DB Error: ' . $database->getLastError();
             $error .= ' | Pass length: ' . strlen($actualPass);
             $error .= ' | Pass empty: ' . ($actualPass === '' ? 'YES' : 'NO');
+            $error .= ' | DB_HOST: ' . (getenv('DB_HOST') ?: 'not set');
+            $error .= ' | DB_PORT: ' . (getenv('DB_PORT') ?: 'not set');
+            $error .= ' | DB_USER: ' . (getenv('DB_USER') ?: 'not set');
         }
 
         if($conn){
