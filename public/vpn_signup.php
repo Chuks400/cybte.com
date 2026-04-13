@@ -29,7 +29,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $conn = $database->connect();
         } catch (Throwable $e) {
             $conn = null;
-            $error = $e->getMessage();
+            $error = 'Database error: ' . $e->getMessage();
+            // Debug info
+            $error .= ' | Last DB Error: ' . $database->getLastError();
+            $error .= ' | DB_HOST: ' . getenv('DB_HOST');
+            $error .= ' | Env loaded: ' . (file_exists(__DIR__ . '/../.env') ? 'YES' : 'NO');
         }
 
         if($conn){
