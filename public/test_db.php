@@ -32,7 +32,7 @@ if (file_exists($envPath)) {
 // Test 3: Try direct connection
 echo "4. Testing Direct Connection:\n";
 $host = getenv('DB_HOST') ?: '127.0.0.1';
-$port = (int)(getenv('DB_PORT') ?: 3308);
+$port = (int)(getenv('DB_PORT') ?: 3306);
 $user = getenv('DB_USER') ?: 'root';
 $pass = getenv('DB_PASS') ?: 'Cjohn22@';
 $name = getenv('DB_NAME') ?: 'cybte';

@@ -13,7 +13,7 @@ echo "=== VPN Server Setup ===\n\n";
 function getDbConfig(): array {
     return [
         'host' => getenv('DB_HOST') ?: '127.0.0.1',
-        'port' => getenv('DB_PORT') ?: '3308',
+        'port' => getenv('DB_PORT') ?: '3306',
         'username' => getenv('DB_USER') ?: 'root',
         'password' => getenv('DB_PASS') ?: 'Cjohn22@',
         'dbname' => getenv('DB_NAME') ?: 'cybte',
@@ -22,8 +22,8 @@ function getDbConfig(): array {
 
 function connectToMysqlServer(array $config): PDO {
     $ports = [$config['port']];
-    if ((int)$config['port'] === 3308) {
-        $ports[] = 3306;
+    if ((int)$config['port'] === 3306) {
+        $ports[] = 3308;
     }
 
     foreach ($ports as $port) {

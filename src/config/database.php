@@ -5,7 +5,7 @@ class Database {
     private $db_name = "cybte";
     private $username = "root";
     private $password = "Cjohn22@";
-    private $port = 3308;
+    private $port = 3306;
 
     private $lastError = null;
 
@@ -93,6 +93,41 @@ class Database {
         if($envPort){ $this->port = (int)$envPort; }
     }
 
+    private function isUnknownDatabaseError(string $message): bool {
+        return stripos($message, 'Unknown database') !== false;
+    }
+
+    private function createDatabaseIfMissing(string $host, int $port): bool {
+        $sqlFile = __DIR__ . '/../../database/trustshield.sql';
+        if (!file_exists($sqlFile)) {
+            return false;
+        }
+
+        try {
+            $pdo = new PDO("mysql:host=$host;port=$port;charset=utf8mb4", $this->username, $this->password);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+            $sql = file_get_contents($sqlFile);
+            $sql = preg_replace('/^\s*(CREATE DATABASE|USE) .*$/mi', '', $sql);
+            $statements = array_filter(array_map('trim', explode(';', $sql)));
+
+            $pdo->exec("CREATE DATABASE IF NOT EXISTS `{$this->db_name}` CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+            $pdo->exec("USE `{$this->db_name}`");
+
+            foreach ($statements as $statement) {
+                if ($statement === '' || preg_match('/^\s*(--|\/\*)/', $statement)) {
+                    continue;
+                }
+                $pdo->exec($statement);
+            }
+
+            return true;
+        } catch (PDOException $e) {
+            $this->lastError = $e->getMessage();
+            return false;
+        }
+    }
+
     public function connect(){
 
         $this->conn = null;
@@ -101,9 +136,13 @@ class Database {
         $this->loadEnvCredentials();
 
         $portsToTry = [$this->port];
-        if($this->port === 3308){
+        if ($this->port !== 3306) {
             $portsToTry[] = 3306;
         }
+        if ($this->port !== 3308) {
+            $portsToTry[] = 3308;
+        }
+        $portsToTry = array_unique($portsToTry);
 
         $hostsToTry = [$this->host];
         if($this->host === '127.0.0.1'){
@@ -120,6 +159,18 @@ class Database {
                 }catch(PDOException $e){
                     $this->lastError = $e->getMessage();
                     $this->conn = null;
+
+                    if ($this->isUnknownDatabaseError($e->getMessage()) && $this->createDatabaseIfMissing($host, $port)) {
+                        try {
+                            $dsn = "mysql:host=$host;port=$port;dbname=".$this->db_name.";charset=utf8mb4";
+                            $this->conn = new PDO($dsn, $this->username, $this->password);
+                            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                            return $this->conn;
+                        } catch (PDOException $reconnectException) {
+                            $this->lastError = $reconnectException->getMessage();
+                            $this->conn = null;
+                        }
+                    }
                 }
             }
         }
