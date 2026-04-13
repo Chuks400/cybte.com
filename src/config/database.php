@@ -1,10 +1,5 @@
 <?php
-// Load environment variables - use require not require_once to ensure putenv() executes
-$envFile = __DIR__ . '/../../.env';
-if (file_exists($envFile)) {
-    require $envFile;
-}
-
+// Parse .env file directly and set credentials
 class Database {
 
     private $host = "127.0.0.1";
@@ -21,28 +16,53 @@ class Database {
         return $this->lastError;
     }
 
-    public function connect(){
-
-        $this->conn = null;
-        $this->lastError = null;
-
-        // Ensure .env is loaded (fallback for require caching)
+    private function loadEnvCredentials() {
         $envFile = __DIR__ . '/../../.env';
         if (file_exists($envFile)) {
             require $envFile;
         }
-
+        
+        // Try to get from getenv() first (works in CLI and some web servers)
         $envHost = getenv('DB_HOST');
         $envName = getenv('DB_NAME');
         $envUser = getenv('DB_USER');
         $envPass = getenv('DB_PASS');
         $envPort = getenv('DB_PORT');
-
+        
+        // If getenv() didn't work, parse the .env file directly
+        if (!$envPass) {
+            $content = file_get_contents($envFile);
+            if (preg_match("/putenv\\('DB_PASS=([^']*)'\\)/", $content, $m)) {
+                $envPass = $m[1];
+            }
+            if (preg_match("/putenv\\('DB_HOST=([^']*)'\\)/", $content, $m)) {
+                $envHost = $m[1];
+            }
+            if (preg_match("/putenv\\('DB_PORT=([^']*)'\\)/", $content, $m)) {
+                $envPort = $m[1];
+            }
+            if (preg_match("/putenv\\('DB_USER=([^']*)'\\)/", $content, $m)) {
+                $envUser = $m[1];
+            }
+            if (preg_match("/putenv\\('DB_NAME=([^']*)'\\)/", $content, $m)) {
+                $envName = $m[1];
+            }
+        }
+        
         if($envHost){ $this->host = $envHost; }
         if($envName){ $this->db_name = $envName; }
         if($envUser){ $this->username = $envUser; }
-        if($envPass !== false && $envPass !== null && $envPass !== ''){ $this->password = $envPass; }
+        if($envPass){ $this->password = $envPass; }
         if($envPort){ $this->port = (int)$envPort; }
+    }
+
+    public function connect(){
+
+        $this->conn = null;
+        $this->lastError = null;
+
+        // Load credentials from .env
+        $this->loadEnvCredentials();
 
         $portsToTry = [$this->port];
         if($this->port === 3308){
