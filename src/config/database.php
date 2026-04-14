@@ -1,4 +1,10 @@
 ﻿<?php
+// Load .env file directly
+$envFile = __DIR__ . '/../../.env';
+if (file_exists($envFile)) {
+    require_once $envFile;
+}
+
 class Database {
 
     private $host = "127.0.0.1";
@@ -15,81 +21,18 @@ class Database {
         return $this->lastError;
     }
 
-    private function requireEnvFile(): void {
-        $envFile = __DIR__ . '/../../.env';
-        if (!file_exists($envFile)) {
-            return;
-        }
-
-        try {
-            require_once $envFile;
-        } catch (Throwable $e) {
-            // If .env cannot be executed, fall back to parsing.
-        }
-    }
-
-    private function parseEnvFile(): array {
-        $envFile = __DIR__ . '/../../.env';
-        $values = [];
-
-        if (!file_exists($envFile)) {
-            return $values;
-        }
-
-        $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-        foreach ($lines as $line) {
-            $line = trim($line);
-            if ($line === '' || str_starts_with($line, '#') || str_starts_with($line, '//') || str_starts_with($line, '<?php') || str_starts_with($line, '?>')) {
-                continue;
-            }
-
-            if (preg_match('/putenv\s*\(\s*["\']([^=]+)=([^"\']*)["\']\s*\)/i', $line, $matches)) {
-                $values[$matches[1]] = $matches[2];
-                continue;
-            }
-
-            if (preg_match('/^([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)$/', $line, $matches)) {
-                $value = trim($matches[2]);
-                if ((str_starts_with($value, '"') && str_ends_with($value, '"')) || (str_starts_with($value, "'") && str_ends_with($value, "'"))) {
-                    $value = substr($value, 1, -1);
-                }
-                $values[$matches[1]] = $value;
-            }
-        }
-
-        return $values;
-    }
-
     private function loadEnvCredentials() {
-        $this->requireEnvFile();
-        $envValues = $this->parseEnvFile();
-
         $envHost = getenv('DB_HOST');
         $envName = getenv('DB_NAME');
         $envUser = getenv('DB_USER');
         $envPass = getenv('DB_PASS');
         $envPort = getenv('DB_PORT');
 
-        if (!$envHost && isset($envValues['DB_HOST'])) {
-            $envHost = $envValues['DB_HOST'];
-        }
-        if (!$envName && isset($envValues['DB_NAME'])) {
-            $envName = $envValues['DB_NAME'];
-        }
-        if (!$envUser && isset($envValues['DB_USER'])) {
-            $envUser = $envValues['DB_USER'];
-        }
-        if (!$envPass && isset($envValues['DB_PASS'])) {
-            $envPass = $envValues['DB_PASS'];
-        }
-        if (!$envPort && isset($envValues['DB_PORT'])) {
-            $envPort = $envValues['DB_PORT'];
-        }
-
         if($envHost){ $this->host = $envHost; }
         if($envName){ $this->db_name = $envName; }
         if($envUser){ $this->username = $envUser; }
-        if($envPass){ $this->password = $envPass; }
+        // Explicitly check for false/null but allow empty string
+        if($envPass !== false && $envPass !== null){ $this->password = $envPass; }
         if($envPort){ $this->port = (int)$envPort; }
     }
 
