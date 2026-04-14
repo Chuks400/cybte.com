@@ -4,8 +4,8 @@ class Database {
     private $host = "127.0.0.1";
     private $db_name = "cybte";
     private $username = "root";
-    private $password = "Cjohn22@";
-    private $port = 3306;
+    private $password = "";  // XAMPP default: no password
+    private $port = 3308;   // XAMPP MySQL port
 
     private $lastError = null;
 
