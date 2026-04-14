@@ -29,7 +29,11 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $conn = $database->connect();
         } catch (Throwable $e) {
             $conn = null;
-            $error = 'Database connection failed. Please try again later.';
+            $reflection = new ReflectionClass($database);
+            $passProp = $reflection->getProperty('password');
+            $passProp->setAccessible(true);
+            $actualPass = $passProp->getValue($database);
+            $error = 'DB Error: ' . $e->getMessage() . ' | Pass loaded: [' . $actualPass . '] | Pass len: ' . strlen($actualPass);
         }
 
         if($conn){
