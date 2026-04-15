@@ -17,12 +17,13 @@ class ThreeXUIDatabaseManager {
     private $inboundId;
     private $panelPort;
     private $webBasePath;
-    
+    private $isLocalServer;
+
     // Debug state
     private $lastError = null;
     private $lastOutput = null;
-    
-    public function __construct($vpsIp, $sshKeyPath, $inboundId = 1, $domain = null, $useHttps = false, $panelPort = '54321', $webBasePath = '/JE2fu7rGygZsRGQwEW/') {
+
+    public function __construct($vpsIp, $sshKeyPath, $inboundId = 1, $domain = null, $useHttps = false, $panelPort = '54321', $webBasePath = '/JE2fu7rGygZsRGQwEW/', $isLocalServer = false) {
         $this->vpsIp = $vpsIp;
         $this->domain = $domain;
         $this->useHttps = $useHttps;
@@ -30,6 +31,7 @@ class ThreeXUIDatabaseManager {
         $this->inboundId = $inboundId;
         $this->panelPort = $panelPort;
         $this->webBasePath = $webBasePath;
+        $this->isLocalServer = $isLocalServer;
         $this->localDbPath = sys_get_temp_dir() . '/x-ui-' . time() . '.db';
     }
     
@@ -76,11 +78,25 @@ class ThreeXUIDatabaseManager {
     }
     
     /**
-     * Download database from VPS
+     * Download database from VPS (or copy locally if same server)
      */
     private function downloadDatabase() {
         $this->localDbPath = sys_get_temp_dir() . '/xui-' . time() . '.db';
-        
+
+        // If local server, just copy the file directly
+        if ($this->isLocalServer) {
+            if (!file_exists($this->dbPath)) {
+                $this->lastError = "Local DB file not found at: " . $this->dbPath;
+                return false;
+            }
+            if (!copy($this->dbPath, $this->localDbPath)) {
+                $this->lastError = "Failed to copy local DB file";
+                return false;
+            }
+            return true;
+        }
+
+        // Remote server - use SCP
         $cmd = sprintf(
             'scp -o StrictHostKeyChecking=no -i %s root@%s:%s %s',
             escapeshellarg($this->sshKeyPath),
@@ -88,36 +104,51 @@ class ThreeXUIDatabaseManager {
             escapeshellarg($this->dbPath),
             escapeshellarg($this->localDbPath)
         );
-        
+
         $result = $this->execCommand($cmd);
-        
+
         if ($result['code'] !== 0) {
             $this->lastError = "Failed to download DB (code " . $result['code'] . "): " . implode("\n", $result['output']);
             return false;
         }
-        
+
         // Verify file was created and has content
         if (!file_exists($this->localDbPath)) {
             $this->lastError = "DB file not created at: " . $this->localDbPath;
             return false;
         }
-        
+
         $size = filesize($this->localDbPath);
         if ($size === 0) {
             $this->lastError = "DB file is empty";
             return false;
         }
-        
+
         return true;
     }
     
     /**
-     * Upload database back to VPS
+     * Upload database back to VPS (or copy locally if same server)
      */
     private function uploadDatabase() {
+        // If local server, stop x-ui, copy file, restart
+        if ($this->isLocalServer) {
+            exec('systemctl stop x-ui');
+
+            if (!copy($this->localDbPath, $this->dbPath)) {
+                $this->lastError = "Failed to copy DB to local path";
+                exec('systemctl start x-ui');
+                return false;
+            }
+
+            exec('systemctl start x-ui');
+            return true;
+        }
+
+        // Remote server - use SCP
         // Stop x-ui before uploading
         $this->execRemote('systemctl stop x-ui');
-        
+
         $cmd = sprintf(
             'scp -o StrictHostKeyChecking=no -i %s %s root@%s:%s',
             escapeshellarg($this->sshKeyPath),
@@ -125,17 +156,17 @@ class ThreeXUIDatabaseManager {
             escapeshellarg($this->vpsIp),
             escapeshellarg($this->dbPath)
         );
-        
+
         $result = $this->execCommand($cmd);
-        
+
         if ($result['code'] !== 0) {
             $this->lastError = "Failed to upload DB (code " . $result['code'] . "): " . implode("\n", $result['output']);
             return false;
         }
-        
+
         // Restart x-ui
         $this->execRemote('systemctl start x-ui');
-        
+
         return true;
     }
     
