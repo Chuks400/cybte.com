@@ -88,7 +88,7 @@ class ResendMailer {
             return false;
         }
         
-        if ($httpCode !== 200) {
+        if ($httpCode !== 200 && $httpCode !== 202) {
             error_log('ResendMailer API error (' . $httpCode . '): ' . $response);
             return false;
         }
@@ -110,7 +110,7 @@ class ResendMailer {
     public function getConfigStatus() {
         return [
             'api_key_set' => !empty($this->apiKey),
-            'api_key_valid_format' => strpos($this->apiKey, 're_bm2eAkm7_xVjW44a8RHrLB8pSfQMz36hn') === 0,
+            'api_key_valid_format' => strpos($this->apiKey, 're_') === 0,
             'from_email' => $this->fromEmail,
             'from_name' => $this->fromName,
             'is_configured' => $this->isConfigured()
