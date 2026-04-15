@@ -83,17 +83,26 @@ class ThreeXUIDatabaseManager {
     private function downloadDatabase() {
         $this->localDbPath = sys_get_temp_dir() . '/xui-' . time() . '.db';
 
-        // If local server, just copy the file directly
+        // If local server, read DB directly without copying
         if ($this->isLocalServer) {
             if (!file_exists($this->dbPath)) {
                 $this->lastError = "Local DB file not found at: " . $this->dbPath;
                 return false;
             }
-            if (!copy($this->dbPath, $this->localDbPath)) {
-                $this->lastError = "Failed to copy local DB file";
-                return false;
+            // Try to read with shell_exec and sudo as fallback
+            $output = shell_exec('sudo cat ' . escapeshellarg($this->dbPath) . ' 2>/dev/null');
+            if ($output) {
+                file_put_contents($this->localDbPath, $output);
+                return true;
             }
-            return true;
+            // Fallback: try direct read (may fail due to permissions)
+            $content = @file_get_contents($this->dbPath);
+            if ($content !== false) {
+                file_put_contents($this->localDbPath, $content);
+                return true;
+            }
+            $this->lastError = "Failed to read local DB file - permission denied. Run: chmod 644 /etc/x-ui/x-ui.db";
+            return false;
         }
 
         // Remote server - use SCP
@@ -131,15 +140,29 @@ class ThreeXUIDatabaseManager {
      * Upload database back to VPS (or copy locally if same server)
      */
     private function uploadDatabase() {
-        // If local server, stop x-ui, copy file, restart
+        // If local server, stop x-ui, write file with sudo, restart
         if ($this->isLocalServer) {
             exec('systemctl stop x-ui');
 
-            if (!copy($this->localDbPath, $this->dbPath)) {
-                $this->lastError = "Failed to copy DB to local path";
-                exec('systemctl start x-ui');
-                return false;
+            // Read the local DB content
+            $content = file_get_contents($this->localDbPath);
+
+            // Use sudo tee to write to protected path
+            $cmd = 'echo ' . escapeshellarg($content) . ' | sudo tee ' . escapeshellarg($this->dbPath) . ' > /dev/null';
+            exec($cmd, $output, $returnCode);
+
+            if ($returnCode !== 0) {
+                // Fallback: try direct copy (may fail due to permissions)
+                if (!@copy($this->localDbPath, $this->dbPath)) {
+                    $this->lastError = "Failed to copy DB to local path";
+                    exec('systemctl start x-ui');
+                    return false;
+                }
             }
+
+            // Set proper permissions after writing
+            exec('sudo chmod 644 ' . escapeshellarg($this->dbPath));
+            exec('sudo chown root:root ' . escapeshellarg($this->dbPath));
 
             exec('systemctl start x-ui');
             return true;
