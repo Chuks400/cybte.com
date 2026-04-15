@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/VPN/VPNService.php';
@@ -85,11 +87,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 }
 
                 // Create real VPN account via 3x-ui API
-                $vpnService = new VPNService($conn);
-                $vpnAccount = $vpnService->createAccount($newUserId, null, 'trial');
-                
-                if (!$vpnAccount) {
-                    error_log('VPNService: Failed to create VPN account for user ' . $newUserId);
+                try {
+                    $vpnService = new VPNService($conn);
+                    $vpnAccount = $vpnService->createAccount($newUserId, null, 'trial');
+                    
+                    if (!$vpnAccount) {
+                        error_log('VPNService: Failed to create VPN account for user ' . $newUserId);
+                    }
+                } catch (Throwable $e) {
+                    error_log('VPNService Error: ' . $e->getMessage());
                 }
 
                 // Redirect to verification pending page with email delivery status

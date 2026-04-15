@@ -6,15 +6,38 @@
  */
 
 class EmailVerification {
-    
+
     private $conn;
     private $fromEmail;
     private $fromName;
-    
+
     public function __construct($conn) {
         $this->conn = $conn;
+        $this->loadEnvFile();
         $this->fromEmail = getenv('MAIL_FROM_ADDRESS') ?: 'noreply@cybte.com';
         $this->fromName = getenv('MAIL_FROM_NAME') ?: 'Cybte AI';
+    }
+
+    /**
+     * Load environment variables from .env file
+     */
+    private function loadEnvFile() {
+        $envFile = __DIR__ . '/../../.env';
+        if (!file_exists($envFile)) {
+            return;
+        }
+
+        $lines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if ($line === '' || str_starts_with($line, '#') || str_starts_with($line, '//') || str_starts_with($line, '<?php') || str_starts_with($line, '?>')) {
+                continue;
+            }
+
+            if (preg_match('/putenv\s*\(\s*["\']([^=]+)=([^"\']*)["\']\s*\)/i', $line, $matches)) {
+                putenv("{$matches[1]}={$matches[2]}");
+            }
+        }
     }
     
     /**
