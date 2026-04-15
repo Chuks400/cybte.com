@@ -1,4 +1,7 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/utils/EmailVerification.php';
 require_once __DIR__ . '/../src/models/User.php';
@@ -30,7 +33,7 @@ if ($email && filter_var($email, FILTER_VALIDATE_EMAIL)) {
         }
     } catch (Exception $e) {
         error_log('ResendVerification: ' . $e->getMessage());
-        $status = 'error';
+        die('Error: ' . $e->getMessage());
     }
 }
 
