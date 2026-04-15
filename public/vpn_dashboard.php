@@ -21,7 +21,7 @@ try {
 }
 
 $userId = (int)($_SESSION['user_id'] ?? 0);
-$userRole = $_SESSION['user_role'] ?? 'vpn_user';
+$userRole = $_SESSION['role'] ?? 'vpn_user';
 $isAdmin = in_array($userRole, ['admin', 'owner']);
 
 // Admin/Owner bypass - always active subscription
