@@ -136,7 +136,8 @@ if($conn && $userId > 0){
     $stmt->execute();
     $sub = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if($sub){
+    if($sub && !$isAdmin){
+        // Only use DB subscription for non-admin users
         $subscriptionPlan = $sub['plan'] ?: $subscriptionPlan;
         $subscriptionStatus = $sub['status'] ?: $subscriptionStatus;
         $subscriptionExpiry = $sub['expiry_date'] ?? null;
