@@ -20,9 +20,12 @@ try {
 }
 
 $userId = (int)($_SESSION['user_id'] ?? 0);
+$userRole = $_SESSION['user_role'] ?? 'vpn_user';
+$isAdmin = in_array($userRole, ['admin', 'owner']);
 
-$subscriptionPlan = 'trial';
-$subscriptionStatus = 'inactive';
+// Admin/Owner bypass - always active subscription
+$subscriptionPlan = $isAdmin ? 'owner' : 'trial';
+$subscriptionStatus = $isAdmin ? 'active' : 'inactive';
 $subscriptionExpiry = null;
 $subscriptionLink = '';
 $userEmail = '';
@@ -36,8 +39,8 @@ $serverInfo = null;
 if($conn && isset($_POST['reset_link']) && $userId > 0){
     $vpnService = new VPNService($conn);
 
-    // Auto-create subscription if none exists (for trial users)
-    if($subscriptionStatus !== 'active'){
+    // Auto-create subscription if none exists (for trial users) - skip for admin
+    if($subscriptionStatus !== 'active' && !$isAdmin){
         $startDate = date('Y-m-d H:i:s');
         $expiryDate = date('Y-m-d H:i:s', strtotime('+7 days')); // 7 days for trial
         $newStatus = 'active';
@@ -83,6 +86,7 @@ if($conn && isset($_POST['reset_link']) && $userId > 0){
         }
 
         $dbError .= 'Please contact support.';
+        error_log('VPN Link Generation Failed for user ' . $userId . ': ' . print_r($servers, true));
     }
 }
 
