@@ -5,7 +5,7 @@ class Database {
     private $db_name = "cybte";
     private $username = "root";
     private $password = "Cjohn22@";
-    private $port = 3306;
+    private $port = 3306;  // Try 3306 first, fallback to 3308
 
     private $lastError = null;
 
