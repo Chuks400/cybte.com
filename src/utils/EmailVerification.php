@@ -105,7 +105,8 @@ class EmailVerification {
         require_once __DIR__ . '/ResendMailer.php';
         require_once __DIR__ . '/SmtpMailer.php';
         
-        $verificationUrl = 'https://www.cybte.com/verify_email.php?token=' . $token;
+        $appUrl = getenv('APP_URL') ?: 'https://www.cybte.com';
+        $verificationUrl = rtrim($appUrl, '/') . '/verify_email.php?token=' . $token;
         
         $subject = 'Verify Your Cybte VPN Account';
         
