@@ -1,7 +1,6 @@
 <?php
 error_reporting(E_ALL);
-ini_set('display_errors', 0); // Don't display errors to prevent breaking HTML layout
-ini_set('log_errors', 1);
+ini_set('display_errors', 1);
 
 require_once __DIR__ . '/../src/auth.php';
 require_once __DIR__ . '/../src/config/database.php';
@@ -21,7 +20,7 @@ try {
 }
 
 $userId = (int)($_SESSION['user_id'] ?? 0);
-$userRole = $_SESSION['role'] ?? 'vpn_user';
+$userRole = $_SESSION['user_role'] ?? 'vpn_user';
 $isAdmin = in_array($userRole, ['admin', 'owner']);
 
 // Admin/Owner bypass - always active subscription
@@ -136,8 +135,7 @@ if($conn && $userId > 0){
     $stmt->execute();
     $sub = $stmt->fetch(PDO::FETCH_ASSOC);
     
-    if($sub && !$isAdmin){
-        // Only use DB subscription for non-admin users
+    if($sub){
         $subscriptionPlan = $sub['plan'] ?: $subscriptionPlan;
         $subscriptionStatus = $sub['status'] ?: $subscriptionStatus;
         $subscriptionExpiry = $sub['expiry_date'] ?? null;
