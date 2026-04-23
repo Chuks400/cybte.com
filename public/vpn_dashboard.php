@@ -77,15 +77,20 @@ if($conn && isset($_POST['reset_link']) && $userId > 0){
         exit();
     } else {
         // Get detailed error from error log
-        $dbError = 'Failed to generate subscription link. ';
-
+        $errorDetails = error_get_last();
+        $dbError = 'Failed to generate subscription link.<br>';
+        
         // Check if servers exist
         $servers = $vpnService->getServers();
         if(empty($servers)){
-            $dbError .= 'No active VPN servers configured. ';
+            $dbError .= '<strong>Error:</strong> No active VPN servers configured.<br>';
+        } else {
+            $dbError .= '<strong>Servers found:</strong> ' . count($servers) . '<br>';
         }
-
-        $dbError .= 'Please contact support.';
+        
+        $dbError .= '<strong>User ID:</strong> ' . $userId . '<br>';
+        $dbError .= '<strong>Role:</strong> ' . $userRole . '<br>';
+        $dbError .= '<strong>Check:</strong> VPN service logs for details.';
     }
 }
 

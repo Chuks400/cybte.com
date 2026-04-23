@@ -99,7 +99,7 @@ class VPNService {
         $clientEmail = $this->generateClientEmail($userId, $user['email']);
         
         // Initialize 3x-ui Database Manager with HTTPS support
-        $sshKeyPath = $server['ssh_key_path'] ?? 'C:\\Users\\' . getenv('USERNAME') . '\\.ssh\\id_rsa';
+        $sshKeyPath = $server['ssh_key_path'] ?? '/root/.ssh/id_vpn';
         $manager = new ThreeXUIDatabaseManager(
             $server['ip_address'],
             $sshKeyPath,
