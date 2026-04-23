@@ -140,18 +140,24 @@ class ThreeXUIDatabaseManager {
      * Upload database back to VPS (or copy locally if same server)
      */
     private function uploadDatabase() {
-        // If local server, stop x-ui, copy file with sudo, restart
+        // If local server, stop x-ui, write file with sudo, restart
         if ($this->isLocalServer) {
             exec('systemctl stop x-ui');
 
-            // Use sudo cp to copy temp DB to protected path
-            $cmd = 'sudo cp ' . escapeshellarg($this->localDbPath) . ' ' . escapeshellarg($this->dbPath);
+            // Read the local DB content
+            $content = file_get_contents($this->localDbPath);
+
+            // Use sudo tee to write to protected path
+            $cmd = 'echo ' . escapeshellarg($content) . ' | sudo tee ' . escapeshellarg($this->dbPath) . ' > /dev/null';
             exec($cmd, $output, $returnCode);
 
             if ($returnCode !== 0) {
-                $this->lastError = "Failed to copy DB to local path (sudo cp failed)";
-                exec('systemctl start x-ui');
-                return false;
+                // Fallback: try direct copy (may fail due to permissions)
+                if (!@copy($this->localDbPath, $this->dbPath)) {
+                    $this->lastError = "Failed to copy DB to local path";
+                    exec('systemctl start x-ui');
+                    return false;
+                }
             }
 
             // Set proper permissions after writing
