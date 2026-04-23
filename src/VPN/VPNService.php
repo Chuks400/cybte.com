@@ -99,13 +99,7 @@ class VPNService {
         $clientEmail = $this->generateClientEmail($userId, $user['email']);
         
         // Initialize 3x-ui Database Manager with HTTPS support
-        // Use local path since PHP runs on the same VPS as 3x-ui panel
-        $sshKeyPath = $server['ssh_key_path'] ?? '/root/.ssh/id_rsa';
-
-        // Check if server is local (same machine as web app)
-        $localIps = ['127.0.0.1', 'localhost', '178.104.139.94'];
-        $isLocalServer = in_array($server['ip_address'], $localIps);
-
+        $sshKeyPath = $server['ssh_key_path'] ?? 'C:\\Users\\' . getenv('USERNAME') . '\\.ssh\\id_rsa';
         $manager = new ThreeXUIDatabaseManager(
             $server['ip_address'],
             $sshKeyPath,
@@ -113,8 +107,7 @@ class VPNService {
             $server['domain'] ?? null,        // Domain name (e.g., cybte.com)
             $server['use_https'] ?? false,    // Enable HTTPS
             $server['panel_port'] ?? '54321',  // Panel port
-            $server['web_base_path'] ?? '/JE2fu7rGygZsRGQwEW/',  // Web base path
-            $isLocalServer                    // Local server flag - skip SSH
+            $server['web_base_path'] ?? '/JE2fu7rGygZsRGQwEW/'  // Web base path
         );
         
         // Create client on panel

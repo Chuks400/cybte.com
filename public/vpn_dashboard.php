@@ -86,7 +86,6 @@ if($conn && isset($_POST['reset_link']) && $userId > 0){
         }
 
         $dbError .= 'Please contact support.';
-        error_log('VPN Link Generation Failed for user ' . $userId . ': ' . print_r($servers, true));
     }
 }
 

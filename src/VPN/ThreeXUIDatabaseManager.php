@@ -17,13 +17,12 @@ class ThreeXUIDatabaseManager {
     private $inboundId;
     private $panelPort;
     private $webBasePath;
-    private $isLocalServer;
-
+    
     // Debug state
     private $lastError = null;
     private $lastOutput = null;
-
-    public function __construct($vpsIp, $sshKeyPath, $inboundId = 1, $domain = null, $useHttps = false, $panelPort = '54321', $webBasePath = '/JE2fu7rGygZsRGQwEW/', $isLocalServer = false) {
+    
+    public function __construct($vpsIp, $sshKeyPath, $inboundId = 1, $domain = null, $useHttps = false, $panelPort = '54321', $webBasePath = '/JE2fu7rGygZsRGQwEW/') {
         $this->vpsIp = $vpsIp;
         $this->domain = $domain;
         $this->useHttps = $useHttps;
@@ -31,7 +30,6 @@ class ThreeXUIDatabaseManager {
         $this->inboundId = $inboundId;
         $this->panelPort = $panelPort;
         $this->webBasePath = $webBasePath;
-        $this->isLocalServer = $isLocalServer;
         $this->localDbPath = sys_get_temp_dir() . '/x-ui-' . time() . '.db';
     }
     
@@ -78,34 +76,11 @@ class ThreeXUIDatabaseManager {
     }
     
     /**
-     * Download database from VPS (or copy locally if same server)
+     * Download database from VPS
      */
     private function downloadDatabase() {
         $this->localDbPath = sys_get_temp_dir() . '/xui-' . time() . '.db';
-
-        // If local server, read DB directly without copying
-        if ($this->isLocalServer) {
-            if (!file_exists($this->dbPath)) {
-                $this->lastError = "Local DB file not found at: " . $this->dbPath;
-                return false;
-            }
-            // Try to read with shell_exec and sudo as fallback
-            $output = shell_exec('sudo cat ' . escapeshellarg($this->dbPath) . ' 2>/dev/null');
-            if ($output) {
-                file_put_contents($this->localDbPath, $output);
-                return true;
-            }
-            // Fallback: try direct read (may fail due to permissions)
-            $content = @file_get_contents($this->dbPath);
-            if ($content !== false) {
-                file_put_contents($this->localDbPath, $content);
-                return true;
-            }
-            $this->lastError = "Failed to read local DB file - permission denied. Run: chmod 644 /etc/x-ui/x-ui.db";
-            return false;
-        }
-
-        // Remote server - use SCP
+        
         $cmd = sprintf(
             'scp -o StrictHostKeyChecking=no -i %s root@%s:%s %s',
             escapeshellarg($this->sshKeyPath),
@@ -113,65 +88,36 @@ class ThreeXUIDatabaseManager {
             escapeshellarg($this->dbPath),
             escapeshellarg($this->localDbPath)
         );
-
+        
         $result = $this->execCommand($cmd);
-
+        
         if ($result['code'] !== 0) {
             $this->lastError = "Failed to download DB (code " . $result['code'] . "): " . implode("\n", $result['output']);
             return false;
         }
-
+        
         // Verify file was created and has content
         if (!file_exists($this->localDbPath)) {
             $this->lastError = "DB file not created at: " . $this->localDbPath;
             return false;
         }
-
+        
         $size = filesize($this->localDbPath);
         if ($size === 0) {
             $this->lastError = "DB file is empty";
             return false;
         }
-
+        
         return true;
     }
     
     /**
-     * Upload database back to VPS (or copy locally if same server)
+     * Upload database back to VPS
      */
     private function uploadDatabase() {
-        // If local server, stop x-ui, write file with sudo, restart
-        if ($this->isLocalServer) {
-            exec('systemctl stop x-ui');
-
-            // Read the local DB content
-            $content = file_get_contents($this->localDbPath);
-
-            // Use sudo tee to write to protected path
-            $cmd = 'echo ' . escapeshellarg($content) . ' | sudo tee ' . escapeshellarg($this->dbPath) . ' > /dev/null';
-            exec($cmd, $output, $returnCode);
-
-            if ($returnCode !== 0) {
-                // Fallback: try direct copy (may fail due to permissions)
-                if (!@copy($this->localDbPath, $this->dbPath)) {
-                    $this->lastError = "Failed to copy DB to local path";
-                    exec('systemctl start x-ui');
-                    return false;
-                }
-            }
-
-            // Set proper permissions after writing
-            exec('sudo chmod 644 ' . escapeshellarg($this->dbPath));
-            exec('sudo chown root:root ' . escapeshellarg($this->dbPath));
-
-            exec('systemctl start x-ui');
-            return true;
-        }
-
-        // Remote server - use SCP
         // Stop x-ui before uploading
         $this->execRemote('systemctl stop x-ui');
-
+        
         $cmd = sprintf(
             'scp -o StrictHostKeyChecking=no -i %s %s root@%s:%s',
             escapeshellarg($this->sshKeyPath),
@@ -179,17 +125,17 @@ class ThreeXUIDatabaseManager {
             escapeshellarg($this->vpsIp),
             escapeshellarg($this->dbPath)
         );
-
+        
         $result = $this->execCommand($cmd);
-
+        
         if ($result['code'] !== 0) {
             $this->lastError = "Failed to upload DB (code " . $result['code'] . "): " . implode("\n", $result['output']);
             return false;
         }
-
+        
         // Restart x-ui
         $this->execRemote('systemctl start x-ui');
-
+        
         return true;
     }
     
