@@ -442,6 +442,12 @@ try {
                     <h2>VPN Services</h2>
                 </div>
                 <div class="services-grid">
+                    <a href="vault.php" class="service-card vault-service">
+                        <div class="service-icon"><i class="fas fa-vault"></i></div>
+                        <div class="service-arrow"><i class="fas fa-arrow-right"></i></div>
+                        <h3>Cybte Secure Vault</h3>
+                        <p>Protected document and sensitive-data workspace. Product access is being prepared.</p>
+                    </a>
                     <a href="vpn_servers.php" class="service-card">
                         <div class="service-icon"><i class="fas fa-server"></i></div>
                         <div class="service-arrow"><i class="fas fa-arrow-right"></i></div>
