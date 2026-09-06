@@ -1,0 +1,61 @@
+name: PHP quality checks
+
+on:
+  push:
+    branches: [cybte-enterprise-refresh, main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  php-quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Configure PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: pdo_mysql, openssl, fileinfo, mbstring, curl
+          coverage: none
+      - name: PHP syntax check
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            php -l "$file"
+          done < <(find . -type f -name '*.php' -not -path './vendor/*' -print0)
+      - name: Reject unresolved merge markers
+        shell: bash
+        run: |
+          set -euo pipefail
+          if grep -RInE '^(<<<<<<<|=======|>>>>>>>)' --exclude-dir=.git --exclude-dir=vendor .; then
+            echo 'Unresolved merge markers found.'
+            exit 1
+          fi
+      - name: Start PHP smoke server
+        shell: bash
+        run: |
+          php -S 127.0.0.1:8080 -t public >/tmp/cybte-php-server.log 2>&1 &
+          echo $! >/tmp/cybte-php-server.pid
+          sleep 2
+      - name: Public page smoke tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          for path in index.php login.php signup.php vault.php privacy.php terms.php security.php; do
+            status=$(curl -sS -o /tmp/page.out -w '%{http_code}' "http://127.0.0.1:8080/$path")
+            test "$status" = '200' || { cat /tmp/page.out; exit 1; }
+          done
+      - name: Confirm security headers
+        shell: bash
+        run: |
+          set -euo pipefail
+          headers=$(curl -sSI http://127.0.0.1:8080/index.php)
+          echo "$headers" | grep -qi '^X-Content-Type-Options: nosniff'
+          echo "$headers" | grep -qi '^X-Frame-Options: DENY'
+      - name: Stop smoke server
+        if: always()
+        run: kill "$(cat /tmp/cybte-php-server.pid)" 2>/dev/null || true
