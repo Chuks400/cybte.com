@@ -7,31 +7,44 @@ DELIMITER //
 CREATE PROCEDURE cybte_add_refresh_user_columns()
 BEGIN
     IF NOT EXISTS (
-        SELECT 1
-        FROM information_schema.COLUMNS
-        WHERE TABLE_SCHEMA = DATABASE()
-          AND TABLE_NAME = 'users'
-          AND COLUMN_NAME = 'email_verified'
+        SELECT 1 FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'email_verified'
     ) THEN
-        ALTER TABLE users
-            ADD COLUMN email_verified TINYINT(1) NOT NULL DEFAULT 0;
+        ALTER TABLE users ADD COLUMN email_verified TINYINT(1) NOT NULL DEFAULT 0;
     END IF;
 
     IF NOT EXISTS (
-        SELECT 1
-        FROM information_schema.COLUMNS
-        WHERE TABLE_SCHEMA = DATABASE()
-          AND TABLE_NAME = 'users'
-          AND COLUMN_NAME = 'email_verified_at'
+        SELECT 1 FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'email_verified_at'
     ) THEN
-        ALTER TABLE users
-            ADD COLUMN email_verified_at DATETIME NULL;
+        ALTER TABLE users ADD COLUMN email_verified_at DATETIME NULL;
     END IF;
 END//
 DELIMITER ;
-
 CALL cybte_add_refresh_user_columns();
 DROP PROCEDURE cybte_add_refresh_user_columns;
+
+DROP PROCEDURE IF EXISTS cybte_add_fraud_user_scope;
+DELIMITER //
+CREATE PROCEDURE cybte_add_fraud_user_scope()
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fraud_scores' AND COLUMN_NAME = 'user_id'
+    ) THEN
+        ALTER TABLE fraud_scores ADD COLUMN user_id INT NULL AFTER id;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.STATISTICS
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'fraud_scores' AND INDEX_NAME = 'idx_fraud_scores_user_created'
+    ) THEN
+        CREATE INDEX idx_fraud_scores_user_created ON fraud_scores (user_id, created_at);
+    END IF;
+END//
+DELIMITER ;
+CALL cybte_add_fraud_user_scope();
+DROP PROCEDURE cybte_add_fraud_user_scope;
 
 CREATE TABLE IF NOT EXISTS email_verifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
