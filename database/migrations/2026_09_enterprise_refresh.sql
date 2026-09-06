@@ -46,6 +46,28 @@ DELIMITER ;
 CALL cybte_add_fraud_user_scope();
 DROP PROCEDURE cybte_add_fraud_user_scope;
 
+DROP PROCEDURE IF EXISTS cybte_add_scan_user_scope;
+DELIMITER //
+CREATE PROCEDURE cybte_add_scan_user_scope()
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'scan_results' AND COLUMN_NAME = 'user_id'
+    ) THEN
+        ALTER TABLE scan_results ADD COLUMN user_id INT NULL AFTER id;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.STATISTICS
+        WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'scan_results' AND INDEX_NAME = 'idx_scan_results_user_created'
+    ) THEN
+        CREATE INDEX idx_scan_results_user_created ON scan_results (user_id, created_at);
+    END IF;
+END//
+DELIMITER ;
+CALL cybte_add_scan_user_scope();
+DROP PROCEDURE cybte_add_scan_user_scope;
+
 CREATE TABLE IF NOT EXISTS email_verifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
