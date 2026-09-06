@@ -1,6 +1,9 @@
 <?php
-session_start();
+require_once __DIR__ . '/../src/security.php';
+security_start_session();
 $isLoggedIn = isset($_SESSION['user_id']);
+$contactSuccess = security_flash('contact_success');
+$contactError = security_flash('contact_error');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -10,7 +13,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
 <meta name="description" content="Cybte AI is a unified cybersecurity and digital trust platform for fraud intelligence, identity verification, vulnerability protection, secure data storage and private connectivity.">
 <title>Cybte AI — Unified Cybersecurity & Digital Trust</title>
 <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-<link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
+<link rel="stylesheet" href="assets/css/style.css?v=<?php echo filemtime(__DIR__ . '/assets/css/style.css'); ?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body class="enterprise-home">
@@ -33,7 +36,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
           <a href="dashboard.php" class="sign-in-btn">Dashboard</a>
         <?php else: ?>
           <a href="login.php">Sign In</a>
-          <a href="vpn_signup.php" class="sign-in-btn">Create Account</a>
+          <a href="signup.php" class="sign-in-btn">Create Account</a>
         <?php endif; ?>
       </nav>
     </div>
@@ -125,7 +128,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
       <div class="product-icon"><i class="fas fa-vault"></i></div>
       <h3>Cybte Secure Vault</h3>
       <p>A protected environment for confidential documents and sensitive business data, designed around encryption, access controls, secure retrieval and auditable activity.</p>
-      <ul><li>Encrypted storage design</li><li>Role-based access</li><li>Audit logging</li></ul>
+      <ul><li>Encrypted storage</li><li>Account-scoped access</li><li>Audit logging</li></ul>
       <a href="vault.php">Discover Secure Vault <i class="fas fa-arrow-right"></i></a>
     </article>
 
@@ -195,19 +198,23 @@ $isLoggedIn = isset($_SESSION['user_id']);
         </div>
       </div>
       <div class="contact-form enterprise-form">
-        <form method="post" action="#">
+        <?php if ($contactSuccess): ?><div class="form-status success"><i class="fas fa-circle-check"></i> <?php echo htmlspecialchars($contactSuccess); ?></div><?php endif; ?>
+        <?php if ($contactError): ?><div class="form-status error"><i class="fas fa-circle-exclamation"></i> <?php echo htmlspecialchars($contactError); ?></div><?php endif; ?>
+        <form method="post" action="contact_submit.php">
+          <?php echo csrf_input(); ?>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp-field">
           <div class="form-row">
-            <div class="form-group"><input type="text" name="name" placeholder="Full name" required></div>
-            <div class="form-group"><input type="email" name="email" placeholder="Business email" required></div>
+            <div class="form-group"><input type="text" name="name" maxlength="120" placeholder="Full name" required></div>
+            <div class="form-group"><input type="email" name="email" maxlength="190" placeholder="Business email" required></div>
           </div>
           <div class="form-row">
-            <div class="form-group"><input type="text" name="company" placeholder="Company / organization"></div>
-            <div class="form-group"><input type="text" name="role" placeholder="Your role"></div>
+            <div class="form-group"><input type="text" name="company" maxlength="190" placeholder="Company / organization"></div>
+            <div class="form-group"><input type="text" name="role" maxlength="120" placeholder="Your role"></div>
           </div>
-          <div class="form-group"><textarea name="message" rows="5" placeholder="Tell us about your collaboration or security needs" required></textarea></div>
+          <div class="form-group"><textarea name="message" rows="5" minlength="20" maxlength="5000" placeholder="Tell us about your collaboration or security needs" required></textarea></div>
           <button type="submit" class="submit-btn">Request a conversation <i class="fas fa-arrow-right"></i></button>
         </form>
-        <small class="form-note">This form interface is being prepared for production messaging integration.</small>
+        <small class="form-note">Enterprise enquiries are stored securely for team review.</small>
       </div>
     </div>
   </div>
@@ -220,7 +227,7 @@ $isLoggedIn = isset($_SESSION['user_id']);
       <div><img src="assets/images/logo.png" alt="Cybte AI"><p>Unified cybersecurity & digital trust.</p></div>
       <div><h4>Platform</h4><a href="#products">Products</a><a href="vault.php">Secure Vault</a><a href="vpn.php">Cybte VPN</a></div>
       <div><h4>Company</h4><a href="#about">About</a><a href="#contact">Partnerships</a><a href="login.php">Customer login</a></div>
-      <div><h4>Security</h4><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Responsible disclosure</a></div>
+      <div><h4>Security</h4><a href="privacy.php">Privacy</a><a href="terms.php">Terms</a><a href="security.php">Responsible disclosure</a></div>
     </div>
     <div class="footer-bottom"><p>&copy; <?php echo date('Y'); ?> Cybte AI. All rights reserved.</p><p>Protect. Verify. Detect. Store. Connect Securely.</p></div>
   </div>
