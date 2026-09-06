@@ -6,6 +6,8 @@
 # Runtime data
 logs/*.log
 *.log
+storage/vault/
+src/VPN/cookie.txt
 
 # OS / editor
 .DS_Store
