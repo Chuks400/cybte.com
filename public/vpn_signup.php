@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-ini_set('display_errors', 1);
+ini_set('display_errors', 0);
 
 require_once __DIR__ . '/../src/config/database.php';
 require_once __DIR__ . '/../src/VPN/VPNService.php';
@@ -117,7 +117,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 <head>
 
-<title>Sign Up - Cybte VPN</title>
+<title>Create Account - Cybte AI</title>
 <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
 <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
 
@@ -135,10 +135,10 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="container">
 <div class="header-content">
 <div class="logo">
-<a href="vpn.php"><img src="assets/images/logo.png" alt="Cybte AI Logo" class="logo-img"></a>
+<a href="index.php"><img src="assets/images/logo.png" alt="Cybte AI Logo" class="logo-img"></a>
 </div>
 <nav>
-<a href="vpn.php">Home</a>
+<a href="index.php">Home</a>
 <a href="vpn_download.php">Download</a>
 <a href="vpn_pricing.php">Price</a>
 <a href="vpn_servers.php">Servers</a>
@@ -154,7 +154,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div class="container">
 <div class="vpn-backend-card">
 <h2>Create Account</h2>
-<p class="vpn-backend-sub">Create your Cybte VPN account to generate your subscription link.</p>
+<p class="vpn-backend-sub">Create your Cybte AI account to access the unified security platform.</p>
 
 <?php if($error): ?>
 <div class="vpn-note" style="border-color: rgba(255, 68, 68, 0.35); background: rgba(255, 68, 68, 0.08);">
