@@ -1,0 +1,36 @@
+name: Deploy cybte.com to Namecheap
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    name: Sync cybte.com Files
+    runs-on: ubuntu-latest
+    steps:
+    - name: Fetch Code from Repository
+      uses: actions/checkout@v4
+
+    - name: Secure SFTP Sync
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: ${{ secrets.FTP_SERVER }}
+        username: ${{ secrets.FTP_USERNAME }}
+        password: ${{ secrets.FTP_PASSWORD }}
+        protocol: ftp
+        # Point this to your target directory on Namecheap
+        server-dir: /public_html/
+        # Exclude local environment, test scripts, and documentation files
+        exclude: |
+          **/.git*
+          **/.git*/**
+          **/node_modules/**
+          .env
+          .env.backup
+          .env.example
+          DEPLOYMENT.md
+          GIT_WORKFLOW.md
+          setup_vpn_server.php
+          test_*.php
