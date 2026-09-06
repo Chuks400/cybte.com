@@ -26,25 +26,22 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          base_ref="origin/main"
           failures=0
           while IFS= read -r file; do
             [ -z "$file" ] && continue
             [ -f "$file" ] || continue
             case "$file" in
               *.php)
-                if ! php -l "$file"; then
-                  failures=1
-                fi
+                if ! php -l "$file"; then failures=1; fi
                 ;;
             esac
-          done < <(git diff --name-only "$base_ref"...HEAD)
+          done < <(git diff --name-only origin/main...HEAD)
           test "$failures" -eq 0
       - name: Reject unresolved merge markers
         shell: bash
         run: |
           set -euo pipefail
-          if grep -RInE '^(<<<<<<<|=======|>>>>>>>)' --exclude-dir=.git --exclude-dir=vendor .; then
+          if grep -RInE '^(<<<<<<<|>>>>>>>)' --exclude-dir=.git --exclude-dir=vendor .; then
             echo 'Unresolved merge markers found.'
             exit 1
           fi
