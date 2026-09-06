@@ -184,7 +184,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <div class="starry-background"></div>
     <div class="stars"></div>
     
-    <a href="vpn.php" class="back-link">
+    <a href="index.php" class="back-link">
         <i class="fas fa-arrow-left"></i> Back to Home
     </a>
 
@@ -193,7 +193,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             <div class="login-header">
                 <img src="assets/images/logo.png" alt="Cybte AI" class="login-logo">
                 <h1 class="login-title">Welcome Back</h1>
-                <p class="login-subtitle">Sign in to access your VPN dashboard</p>
+                <p class="login-subtitle">Sign in to access your Cybte AI security workspace</p>
             </div>
 
             <?php if($error): ?>
@@ -220,7 +220,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             </div>
 
             <div class="login-footer">
-                <p>New to Cybte?</p>
+                <p>New to Cybte AI?</p>
                 <a href="vpn_signup.php" class="signup-btn">
                     <i class="fas fa-user-plus"></i> Create Account
                 </a>
