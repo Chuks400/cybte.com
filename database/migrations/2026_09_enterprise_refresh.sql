@@ -1,9 +1,37 @@
 -- Cybte AI enterprise refresh migration
 -- Apply to the existing Cybte database before deploying this branch.
+-- Compatible with MySQL 8.x and safe to re-run.
 
-ALTER TABLE users
-    ADD COLUMN IF NOT EXISTS email_verified TINYINT(1) NOT NULL DEFAULT 0,
-    ADD COLUMN IF NOT EXISTS email_verified_at DATETIME NULL;
+DROP PROCEDURE IF EXISTS cybte_add_refresh_user_columns;
+DELIMITER //
+CREATE PROCEDURE cybte_add_refresh_user_columns()
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME = 'users'
+          AND COLUMN_NAME = 'email_verified'
+    ) THEN
+        ALTER TABLE users
+            ADD COLUMN email_verified TINYINT(1) NOT NULL DEFAULT 0;
+    END IF;
+
+    IF NOT EXISTS (
+        SELECT 1
+        FROM information_schema.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+          AND TABLE_NAME = 'users'
+          AND COLUMN_NAME = 'email_verified_at'
+    ) THEN
+        ALTER TABLE users
+            ADD COLUMN email_verified_at DATETIME NULL;
+    END IF;
+END//
+DELIMITER ;
+
+CALL cybte_add_refresh_user_columns();
+DROP PROCEDURE cybte_add_refresh_user_columns;
 
 CREATE TABLE IF NOT EXISTS email_verifications (
     id INT AUTO_INCREMENT PRIMARY KEY,
