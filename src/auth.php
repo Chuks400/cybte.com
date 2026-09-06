@@ -1,30 +1,28 @@
 <?php
 
-function require_login($redirect = 'login.php'){
+declare(strict_types=1);
 
-    if(session_status() !== PHP_SESSION_ACTIVE){
-        session_start();
-    }
+require_once __DIR__ . '/security.php';
 
-    if(!isset($_SESSION['user_id'])){
+function require_login(string $redirect = 'login.php'): void
+{
+    security_start_session();
+
+    if (empty($_SESSION['user_id'])) {
         header('Location: ' . $redirect);
         exit();
     }
-
-    session_regenerate_id(true);
 }
 
-function require_role($roles, $redirect = 'login.php'){
-
+function require_role($roles, string $redirect = 'login.php'): void
+{
     require_login($redirect);
 
     $userRole = $_SESSION['role'] ?? null;
+    $roles = is_array($roles) ? $roles : [$roles];
 
-    if(is_string($roles)){
-        $roles = [$roles];
-    }
-
-    if(!$userRole || !in_array($userRole, $roles, true)){
+    if (!$userRole || !in_array($userRole, $roles, true)) {
+        http_response_code(403);
         header('Location: ' . $redirect);
         exit();
     }
