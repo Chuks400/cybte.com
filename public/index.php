@@ -1,434 +1,236 @@
+<?php
+require_once __DIR__ . '/../src/security.php';
+security_start_session();
+$isLoggedIn = isset($_SESSION['user_id']);
+$contactSuccess = security_flash('contact_success');
+$contactError = security_flash('contact_error');
+?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cybte AI - Advanced Cybersecurity Solutions</title>
+<meta name="description" content="Cybte AI is a unified cybersecurity and digital trust platform for fraud intelligence, identity verification, vulnerability protection, secure data storage and private connectivity.">
+<title>Cybte AI — Unified Cybersecurity & Digital Trust</title>
 <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-<link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
-
-<link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
+<link rel="stylesheet" href="assets/css/style.css?v=<?php echo filemtime(__DIR__ . '/assets/css/style.css'); ?>">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
 </head>
-
-<body>
-
+<body class="enterprise-home">
 <div class="starry-background"></div>
 <div class="stars"></div>
 
-<header>
-<div class="container">
-<div class="header-content">
-<div class="logo">
-<img src="assets/images/logo.png" alt="Cybte AI Logo" class="logo-img">
-</div>
-<nav>
-<a href="index.php" class="active">Home</a>
-<a href="#solutions">Solutions</a>
-<a href="#services">Services</a>
-<a href="login.php" class="sign-in-btn">Sign In</a>
-</nav>
-</div>
-</div>
+<header class="enterprise-header">
+  <div class="container">
+    <div class="header-content">
+      <a href="index.php" class="brand-lockup" aria-label="Cybte AI home">
+        <img src="assets/images/logo.png" alt="Cybte AI" class="logo-img">
+      </a>
+      <nav class="enterprise-nav">
+        <a href="#platform">Platform</a>
+        <a href="#products">Products</a>
+        <a href="#enterprise">Enterprise</a>
+        <a href="#about">Company</a>
+        <a href="#contact">Contact</a>
+        <?php if ($isLoggedIn): ?>
+          <a href="dashboard.php" class="sign-in-btn">Dashboard</a>
+        <?php else: ?>
+          <a href="login.php">Sign In</a>
+          <a href="signup.php" class="sign-in-btn">Create Account</a>
+        <?php endif; ?>
+      </nav>
+    </div>
+  </div>
 </header>
 
-<section class="hero">
-<div class="container">
-<div class="hero-content">
-<div class="hero-text">
-<h1 class="hero-brand"><span class="trust">CYB</span><span class="shield">TE</span> <span class="ai">AI</span></h1>
-<h2>Next-Gen Cybersecurity & Fraud Protection</h2>
-<p>Advanced AI-powered security solutions to protect your business from evolving cyber threats and financial fraud, plus secure VPN privacy protection for safer browsing anywhere.</p>
-<button class="cta-button">Get Started</button>
-<div class="hero-features">
-<div class="feature-badge">
-<i class="fas fa-lock"></i>
-<span>Military-Grade Encryption</span>
-</div>
-<div class="feature-badge">
-<i class="fas fa-user-secret"></i>
-<span>Anonymous Protection</span>
-</div>
-<div class="feature-badge">
-<i class="fas fa-shield-virus"></i>
-<span>AI Threat Detection</span>
-</div>
-</div>
-</div>
-<div class="hero-image">
-<div class="globe-container">
-<div class="globe">
-<div class="globe-grid"></div>
-<i class="fas fa-globe-americas"></i>
-</div>
-</div>
-</div>
-</div>
-</div>
+<main>
+<section class="enterprise-hero" id="platform">
+  <div class="container enterprise-hero-grid">
+    <div class="enterprise-hero-copy">
+      <div class="eyebrow"><span></span> AI-powered cybersecurity & digital trust</div>
+      <h1>One security ecosystem for your <em>digital world.</em></h1>
+      <p>Cybte AI brings fraud intelligence, identity verification, vulnerability protection, secure data storage and encrypted connectivity into one integrated platform for individuals and organizations.</p>
+      <div class="hero-actions">
+        <a href="#products" class="primary-action">Explore the platform <i class="fas fa-arrow-right"></i></a>
+        <a href="#contact" class="secondary-action">Partner with Cybte</a>
+      </div>
+      <div class="trust-strip">
+        <span><i class="fas fa-shield-halved"></i> Security-first architecture</span>
+        <span><i class="fas fa-layer-group"></i> Unified dashboard</span>
+        <span><i class="fas fa-code"></i> API-ready vision</span>
+      </div>
+    </div>
+    <div class="command-visual" aria-label="Cybte AI security platform preview">
+      <div class="command-top">
+        <div><span class="status-dot"></span> CYBTE SECURITY CORE</div>
+        <span>ONLINE</span>
+      </div>
+      <div class="command-score">
+        <div class="score-ring"><strong>5</strong><span>security layers</span></div>
+        <div>
+          <small>Unified protection</small>
+          <h3>Protect. Verify.<br>Detect. Store. Connect.</h3>
+        </div>
+      </div>
+      <div class="signal-list">
+        <div><i class="fas fa-wave-square"></i><span>Fraud intelligence</span><b>MONITOR</b></div>
+        <div><i class="fas fa-id-card"></i><span>Identity trust</span><b>VERIFY</b></div>
+        <div><i class="fas fa-bug-slash"></i><span>Cyber risk</span><b>ASSESS</b></div>
+        <div><i class="fas fa-vault"></i><span>Secure Vault</span><b>PROTECT</b></div>
+        <div><i class="fas fa-globe"></i><span>Private access</span><b>CONNECT</b></div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<section class="solutions" id="solutions">
-<div class="container">
-<h2>Our Solutions</h2>
-<div class="solutions-grid">
-<div class="solution-card">
-<div class="icon">
-<i class="fas fa-user-shield"></i>
-</div>
-<h3>Fraud Detection AI</h3>
-<p>Real-time fraud detection using advanced machine learning algorithms to identify and prevent suspicious activities before they impact your business.</p>
-<div class="card-features">
-<span><i class="fas fa-check-circle"></i> Real-time Monitoring</span>
-<span><i class="fas fa-check-circle"></i> Pattern Recognition</span>
-<span><i class="fas fa-check-circle"></i> Instant Alerts</span>
-</div>
-</div>
-<div class="solution-card">
-<div class="icon">
-<i class="fas fa-fingerprint"></i>
-</div>
-<h3>Identity Verification</h3>
-<p>Biometric authentication and AI-powered identity verification solutions ensuring only authorized access to your critical systems and data.</p>
-<div class="card-features">
-<span><i class="fas fa-check-circle"></i> Biometric Auth</span>
-<span><i class="fas fa-check-circle"></i> Multi-factor Security</span>
-<span><i class="fas fa-check-circle"></i> Zero Trust Model</span>
-</div>
-</div>
-<div class="solution-card">
-<div class="icon">
-<i class="fas fa-bug"></i>
-</div>
-<h3>Vulnerability Scanning</h3>
-<p>Comprehensive security scanning to identify and fix vulnerabilities before they can be exploited by malicious actors.</p>
-<div class="card-features">
-<span><i class="fas fa-check-circle"></i> Automated Scanning</span>
-<span><i class="fas fa-check-circle"></i> Risk Assessment</span>
-<span><i class="fas fa-check-circle"></i> Patch Management</span>
-</div>
-</div>
-
-<a class="solution-link" href="vpn.php">
-<div class="solution-card">
-<div class="icon">
-<i class="fas fa-lock"></i>
-</div>
-<h3>VPN Privacy Service</h3>
-<p>Secure, encrypted VPN tunnels to protect your identity, secure public Wi-Fi, and access a fast global network of servers.</p>
-<div class="card-features">
-<span><i class="fas fa-check-circle"></i> Encrypted Tunnels</span>
-<span><i class="fas fa-check-circle"></i> Global Locations</span>
-<span><i class="fas fa-check-circle"></i> Multi-Device Access</span>
-</div>
-</div>
-</a>
-</div>
-</div>
+<section class="platform-intro">
+  <div class="container">
+    <div class="section-kicker">THE CYBTE ECOSYSTEM</div>
+    <div class="section-heading-row">
+      <h2>Five products. One security platform.</h2>
+      <p>Designed to reduce fragmented security tooling and give customers a clearer view of identities, transactions, sensitive data, infrastructure and digital connections.</p>
+    </div>
+  </div>
 </section>
 
-<section class="how-it-works">
-<div class="container">
-<div class="section-content">
-<div class="steps">
-<h2>How It Works</h2>
-<div class="step">
-<div class="step-number">1</div>
-<div class="step-content">
-<h3><i class="fas fa-plug"></i> Connect Your System</h3>
-<p>Seamlessly integrate our AI platform with your existing infrastructure through secure APIs and connectors.</p>
-</div>
-</div>
-<div class="step">
-<div class="step-number">2</div>
-<div class="step-content">
-<h3><i class="fas fa-radar"></i> Scan for Risks</h3>
-<p>Our AI continuously scans for potential security threats, vulnerabilities, and anomalous activities 24/7.</p>
-</div>
-</div>
-<div class="step">
-<div class="step-number">3</div>
-<div class="step-content">
-<h3><i class="fas fa-brain"></i> Detect & Analyze</h3>
-<p>Advanced machine learning algorithms detect and analyze suspicious patterns with 99.9% accuracy.</p>
-</div>
-</div>
-<div class="step">
-<div class="step-number">4</div>
-<div class="step-content">
-<h3><i class="fas fa-shield-alt"></i> Secure & Protect</h3>
-<p>Automated responses and real-time alerts to protect your assets around the clock.</p>
-</div>
-</div>
-</div>
-<div class="dashboard-preview">
-<div class="laptop-container">
-<div class="laptop">
-<div class="screen">
-<div class="dashboard-header">
-<span class="status-indicator active"></span>
-<span class="status-text">SYSTEM SECURE</span>
-<span class="time">14:32:18</span>
-</div>
-<div class="dashboard-stats">
-<div class="stat-item">
-<div class="stat-value">99.9%</div>
-<div class="stat-label">Protection</div>
-</div>
-<div class="stat-item">
-<div class="stat-value">24/7</div>
-<div class="stat-label">Monitoring</div>
-</div>
-<div class="stat-item">
-<div class="stat-value">0</div>
-<div class="stat-label">Threats</div>
-</div>
-</div>
-<div class="chart-container">
-<div class="chart-bars">
-<div class="bar" style="height: 60%"></div>
-<div class="bar" style="height: 80%"></div>
-<div class="bar" style="height: 40%"></div>
-<div class="bar" style="height: 90%"></div>
-<div class="bar" style="height: 70%"></div>
-<div class="bar" style="height: 50%"></div>
-<div class="bar" style="height: 85%"></div>
-</div>
-<div class="chart-label">Threat Activity (7 days)</div>
-</div>
-</div>
-<div class="laptop-base"></div>
-</div>
-</div>
-</div>
-</div>
+<section class="product-suite" id="products">
+  <div class="container product-grid">
+    <article class="product-card featured-product">
+      <div class="product-number">01</div>
+      <div class="product-icon"><i class="fas fa-chart-line"></i></div>
+      <h3>AI Fraud Detection</h3>
+      <p>Analyze transactions and digital activity, surface unusual patterns and support risk-based fraud investigation through intelligent scoring and alerts.</p>
+      <ul><li>Transaction intelligence</li><li>Anomaly detection</li><li>Risk scoring & alerts</li></ul>
+      <a href="fraud.php">Explore fraud protection <i class="fas fa-arrow-up-right-from-square"></i></a>
+    </article>
+
+    <article class="product-card">
+      <div class="product-number">02</div>
+      <div class="product-icon"><i class="fas fa-fingerprint"></i></div>
+      <h3>Identity Verification</h3>
+      <p>A secure onboarding and verification layer designed around identity checks, document workflows, liveness signals and compliance screening.</p>
+      <ul><li>Customer onboarding</li><li>Document verification</li><li>KYC/AML workflow vision</li></ul>
+      <a href="verify.php">Explore identity trust <i class="fas fa-arrow-right"></i></a>
+    </article>
+
+    <article class="product-card">
+      <div class="product-number">03</div>
+      <div class="product-icon"><i class="fas fa-shield-virus"></i></div>
+      <h3>Cybersecurity Protection</h3>
+      <p>Security assessment, vulnerability visibility, alerts and risk reporting designed to help organizations identify weaknesses before they become incidents.</p>
+      <ul><li>Vulnerability assessment</li><li>Threat monitoring</li><li>Risk reporting</li></ul>
+      <a href="scan.php">Explore cyber protection <i class="fas fa-arrow-right"></i></a>
+    </article>
+
+    <article class="product-card vault-card">
+      <div class="new-badge">NEW</div>
+      <div class="product-number">04</div>
+      <div class="product-icon"><i class="fas fa-vault"></i></div>
+      <h3>Cybte Secure Vault</h3>
+      <p>A protected environment for confidential documents and sensitive business data, designed around encryption, access controls, secure retrieval and auditable activity.</p>
+      <ul><li>Encrypted storage</li><li>Account-scoped access</li><li>Audit logging</li></ul>
+      <a href="vault.php">Discover Secure Vault <i class="fas fa-arrow-right"></i></a>
+    </article>
+
+    <article class="product-card">
+      <div class="product-number">05</div>
+      <div class="product-icon"><i class="fas fa-lock"></i></div>
+      <h3>Cybte VPN</h3>
+      <p>Secure connectivity for encrypted internet traffic and additional privacy when users work, browse or connect through untrusted networks.</p>
+      <ul><li>Encrypted tunnels</li><li>Multi-device access</li><li>Private connectivity</li></ul>
+      <a href="vpn.php">Explore Cybte VPN <i class="fas fa-arrow-right"></i></a>
+    </article>
+  </div>
 </section>
 
-<section class="why-choose">
-<div class="container">
-<h2>Why Choose Cybte AI?</h2>
-<div class="features-grid">
-<div class="feature-card">
-<div class="feature-icon">
-<i class="fas fa-robot"></i>
-</div>
-<h3>AI-Powered Security</h3>
-<p>Advanced machine learning algorithms provide intelligent threat detection and response with military-grade accuracy.</p>
-<div class="feature-stats">
-<span>99.9% Accuracy</span>
-<span>Sub-second Response</span>
-</div>
-</div>
-<div class="feature-card">
-<div class="feature-icon">
-<i class="fas fa-certificate"></i>
-</div>
-<h3>Compliance Ready</h3>
-<p>Fully compliant with industry standards including GDPR, PCI DSS, SOC 2, and ISO 27001 certifications.</p>
-<div class="feature-stats">
-<span>SOC 2 Certified</span>
-<span>GDPR Compliant</span>
-</div>
-</div>
-<div class="feature-card">
-<div class="feature-icon">
-<i class="fas fa-clock"></i>
-</div>
-<h3>24/7 Monitoring</h3>
-<p>Round-the-clock security monitoring and instant threat response capabilities by our expert security team.</p>
-<div class="feature-stats">
-<span>24/7 Support</span>
-<span>Instant Response</span>
-</div>
-</div>
-</div>
-<div class="security-showcase">
-<div class="showcase-item">
-<div class="showcase-icon">
-<i class="fas fa-user-secret"></i>
-</div>
-<div class="showcase-content">
-<h4>Anonymous Protection</h4>
-<p>Complete anonymity and privacy protection for all your security operations.</p>
-</div>
-</div>
-<div class="showcase-item">
-<div class="showcase-icon">
-<i class="fas fa-key"></i>
-</div>
-<div class="showcase-content">
-<h4>End-to-End Encryption</h4>
-<p>Military-grade encryption ensures your data remains secure at all times.</p>
-</div>
-</div>
-<div class="showcase-item">
-<div class="showcase-icon">
-<i class="fas fa-network-wired"></i>
-</div>
-<div class="showcase-content">
-<h4>Network Security</h4>
-<p>Advanced network protection against DDoS attacks and intrusions.</p>
-</div>
-</div>
-</div>
-</div>
+<section class="enterprise-section" id="enterprise">
+  <div class="container enterprise-panel">
+    <div>
+      <div class="section-kicker">BUILT FOR INTEGRATION</div>
+      <h2>Security capabilities that can grow with your organization.</h2>
+      <p>The Cybte AI roadmap includes secure APIs so banks, fintechs, SMEs, e-commerce platforms and digital businesses can integrate selected security services directly into their own products and workflows.</p>
+      <div class="enterprise-points">
+        <span><i class="fas fa-building"></i> Enterprise collaboration</span>
+        <span><i class="fas fa-plug"></i> Secure API integrations</span>
+        <span><i class="fas fa-users-gear"></i> Centralized administration</span>
+        <span><i class="fas fa-file-lines"></i> Security reporting</span>
+      </div>
+    </div>
+    <div class="api-window">
+      <div class="api-bar"><span></span><span></span><span></span><b>api.cybte.com</b></div>
+      <pre><code><span>POST</span> /v1/risk/analyze
+{
+  "signal": "transaction",
+  "identity": "verified",
+  "policy": "enterprise"
+}
+
+→ risk_score: 0.18
+→ action: "allow"</code></pre>
+      <small>Illustrative API experience — product roadmap</small>
+    </div>
+  </div>
 </section>
 
-<section class="about">
-<div class="container">
-<div class="about-content">
-<div class="about-text">
-<h2>About Cybte AI</h2>
-<p>Cybte AI is a leading cybersecurity company dedicated to protecting businesses from evolving digital threats. With cutting-edge AI technology and a team of security experts, we provide comprehensive solutions to safeguard your digital assets and ensure business continuity, including secure VPN privacy protection for safer browsing.</p>
-<div class="about-stats">
-<div class="stat-box">
-<div class="stat-number">500+</div>
-<div class="stat-text">Enterprise Clients</div>
-</div>
-<div class="stat-box">
-<div class="stat-number">10M+</div>
-<div class="stat-text">Threats Blocked</div>
-</div>
-<div class="stat-box">
-<div class="stat-number">99.9%</div>
-<div class="stat-text">Uptime SLA</div>
-</div>
-</div>
-</div>
-<div class="about-image">
-<div class="security-graphic">
-<div class="shield-icon">
-<i class="fas fa-shield-alt"></i>
-</div>
-<div class="protection-rings">
-<div class="ring"></div>
-<div class="ring"></div>
-<div class="ring"></div>
-</div>
-</div>
-</div>
-</div>
-</div>
+<section class="company-section" id="about">
+  <div class="container company-grid">
+    <div>
+      <div class="section-kicker">ABOUT CYBTE AI</div>
+      <h2>Building digital trust from Africa for a connected world.</h2>
+    </div>
+    <div>
+      <p>Cybte AI is being developed as a unified cybersecurity and digital trust platform focused on practical protection for identities, transactions, sensitive information, systems and digital connections.</p>
+      <p>Our direction is simple: make advanced security capabilities easier for organizations to access, manage and integrate from one trusted ecosystem.</p>
+    </div>
+  </div>
 </section>
 
-<section class="contact">
-<div class="container">
-<h2>Contact Us</h2>
-<div class="contact-content">
-<div class="contact-form">
-<div class="form-header">
-<h3>Get Protected Today</h3>
-<p>Speak with our security experts</p>
-</div>
-<form>
-<div class="form-group">
-<i class="fas fa-user"></i>
-<input type="text" placeholder="Full Name" required>
-</div>
-<div class="form-group">
-<i class="fas fa-envelope"></i>
-<input type="email" placeholder="Email Address" required>
-</div>
-<div class="form-group">
-<i class="fas fa-building"></i>
-<input type="text" placeholder="Company Name">
-</div>
-<div class="form-group">
-<i class="fas fa-phone"></i>
-<input type="tel" placeholder="Phone Number">
-</div>
-<div class="form-group">
-<i class="fas fa-comment"></i>
-<textarea placeholder="Tell us about your security needs..." rows="4" required></textarea>
-</div>
-<button type="submit" class="submit-btn">
-<i class="fas fa-paper-plane"></i>
-Send Message
-</button>
-</form>
-</div>
-<div class="contact-info">
-<div class="info-card">
-<div class="info-icon">
-<i class="fas fa-headset"></i>
-</div>
-<h3>24/7 Security Support</h3>
-<p>Our security team is always available to assist you with any threats or concerns.</p>
-</div>
-<div class="contact-details">
-<div class="detail-item">
-<div class="detail-icon">
-<i class="fas fa-envelope"></i>
-</div>
-<div class="detail-content">
-<h4>Email</h4>
-<p>security@cybte.com</p>
-</div>
-</div>
-<div class="detail-item">
-<div class="detail-icon">
-<i class="fas fa-phone-alt"></i>
-</div>
-<div class="detail-content">
-<h4>Emergency Hotline</h4>
-<p>+1 (555) 123-4567</p>
-</div>
-</div>
-<div class="detail-item">
-<div class="detail-icon">
-<i class="fas fa-map-marker-alt"></i>
-</div>
-<div class="detail-content">
-<h4>Global HQ</h4>
-<p>San Francisco, CA</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+<section class="contact enterprise-contact" id="contact">
+  <div class="container">
+    <div class="contact-shell">
+      <div class="contact-pitch">
+        <div class="section-kicker">PARTNERSHIPS & ENTERPRISE</div>
+        <h2>Build a more trusted digital experience with Cybte AI.</h2>
+        <p>For pilots, strategic partnerships, security integrations and enterprise collaboration, speak with the Cybte AI team.</p>
+        <div class="contact-meta">
+          <span><i class="fas fa-envelope"></i> security@cybte.com</span>
+          <span><i class="fas fa-globe-africa"></i> Nigeria · Global collaboration</span>
+        </div>
+      </div>
+      <div class="contact-form enterprise-form">
+        <?php if ($contactSuccess): ?><div class="form-status success"><i class="fas fa-circle-check"></i> <?php echo htmlspecialchars($contactSuccess); ?></div><?php endif; ?>
+        <?php if ($contactError): ?><div class="form-status error"><i class="fas fa-circle-exclamation"></i> <?php echo htmlspecialchars($contactError); ?></div><?php endif; ?>
+        <form method="post" action="contact_submit.php">
+          <?php echo csrf_input(); ?>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="hp-field">
+          <div class="form-row">
+            <div class="form-group"><input type="text" name="name" maxlength="120" placeholder="Full name" required></div>
+            <div class="form-group"><input type="email" name="email" maxlength="190" placeholder="Business email" required></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><input type="text" name="company" maxlength="190" placeholder="Company / organization"></div>
+            <div class="form-group"><input type="text" name="role" maxlength="120" placeholder="Your role"></div>
+          </div>
+          <div class="form-group"><textarea name="message" rows="5" minlength="20" maxlength="5000" placeholder="Tell us about your collaboration or security needs" required></textarea></div>
+          <button type="submit" class="submit-btn">Request a conversation <i class="fas fa-arrow-right"></i></button>
+        </form>
+        <small class="form-note">Enterprise enquiries are stored securely for team review.</small>
+      </div>
+    </div>
+  </div>
 </section>
+</main>
 
-<footer>
-<div class="container">
-<div class="footer-content">
-<div class="footer-section">
-<h4>Cybte AI</h4>
-<p>Advanced cybersecurity solutions for the digital age.</p>
-</div>
-<div class="footer-section">
-<h4>Quick Links</h4>
-<ul>
-<li><a href="#solutions">Solutions</a></li>
-<li><a href="#services">Services</a></li>
-<li><a href="#about">About</a></li>
-<li><a href="#contact">Contact</a></li>
-</ul>
-</div>
-<div class="footer-section">
-<h4>Security</h4>
-<ul>
-<li><a href="#">Privacy Policy</a></li>
-<li><a href="#">Terms of Service</a></li>
-<li><a href="#">Compliance</a></li>
-<li><a href="#">Security Center</a></li>
-</ul>
-</div>
-<div class="footer-section">
-<h4>Connect</h4>
-<div class="social-links">
-<a href="#"><i class="fab fa-twitter"></i></a>
-<a href="#"><i class="fab fa-linkedin"></i></a>
-<a href="#"><i class="fab fa-github"></i></a>
-</div>
-</div>
-</div>
-<div class="footer-bottom">
-<p>&copy; 2024 Cybte AI. All rights reserved. | Protected by military-grade encryption</p>
-</div>
-</div>
+<footer class="enterprise-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div><img src="assets/images/logo.png" alt="Cybte AI"><p>Unified cybersecurity & digital trust.</p></div>
+      <div><h4>Platform</h4><a href="#products">Products</a><a href="vault.php">Secure Vault</a><a href="vpn.php">Cybte VPN</a></div>
+      <div><h4>Company</h4><a href="#about">About</a><a href="#contact">Partnerships</a><a href="login.php">Customer login</a></div>
+      <div><h4>Security</h4><a href="privacy.php">Privacy</a><a href="terms.php">Terms</a><a href="security.php">Responsible disclosure</a></div>
+    </div>
+    <div class="footer-bottom"><p>&copy; <?php echo date('Y'); ?> Cybte AI. All rights reserved.</p><p>Protect. Verify. Detect. Store. Connect Securely.</p></div>
+  </div>
 </footer>
-
 </body>
-
 </html>

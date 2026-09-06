@@ -1,233 +1,66 @@
 <?php
 
+declare(strict_types=1);
+
+require_once __DIR__ . '/../src/security.php';
 require_once __DIR__ . '/../src/controllers/AuthController.php';
 
+security_start_session();
 $error = '';
-if($_SERVER["REQUEST_METHOD"] == "POST"){
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
 
-    $auth = new AuthController();
-    $result = $auth->login($email, $password);
-    
-    if (!$result) {
-        $error = 'Invalid email or password.';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (!verify_csrf($_POST['csrf_token'] ?? null)) {
+        $error = 'Your session expired. Please try again.';
+    } elseif (!security_rate_limit('login', 8, 900)) {
+        $error = 'Too many sign-in attempts. Please wait before trying again.';
+    } else {
+        $email = (string)($_POST['email'] ?? '');
+        $password = (string)($_POST['password'] ?? '');
+        $auth = new AuthController();
+        if (!$auth->login($email, $password)) {
+            $error = 'Invalid email or password.';
+        }
     }
 }
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Cybte AI</title>
-    <link rel="icon" type="image/x-icon" href="assets/images/favicon.ico">
-    <link rel="shortcut icon" type="image/x-icon" href="assets/images/favicon.ico">
-    <link rel="stylesheet" href="assets/css/style.css?v=<?php echo time(); ?>">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .login-container {
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .login-card {
-            background: rgba(13, 25, 48, 0.85);
-            border: 1px solid rgba(0, 229, 255, 0.15);
-            border-radius: 16px;
-            padding: 40px;
-            width: 100%;
-            max-width: 420px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(12px);
-        }
-        .login-header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .login-logo {
-            width: 120px;
-            height: 120px;
-            border-radius: 12px;
-            margin-bottom: 15px;
-        }
-        .login-title {
-            font-size: 28px;
-            font-weight: 600;
-            color: #fff;
-            margin-bottom: 8px;
-        }
-        .login-subtitle {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-        }
-        .login-form .form-group {
-            margin-bottom: 20px;
-        }
-        .login-form input {
-            width: 100%;
-            padding: 14px 16px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(0, 229, 255, 0.2);
-            border-radius: 10px;
-            color: #fff;
-            font-size: 15px;
-            transition: all 0.3s ease;
-        }
-        .login-form input:focus {
-            outline: none;
-            border-color: #00e5ff;
-            background: rgba(255, 255, 255, 0.08);
-        }
-        .login-form input::placeholder {
-            color: rgba(255, 255, 255, 0.4);
-        }
-        .login-btn {
-            width: 100%;
-            padding: 14px;
-            background: linear-gradient(135deg, #00e5ff, #00b8d4);
-            border: none;
-            border-radius: 10px;
-            color: #0a1628;
-            font-size: 16px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-        .login-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 229, 255, 0.3);
-        }
-        .login-divider {
-            display: flex;
-            align-items: center;
-            margin: 25px 0;
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 13px;
-        }
-        .login-divider::before,
-        .login-divider::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: rgba(255, 255, 255, 0.15);
-        }
-        .login-divider span {
-            padding: 0 15px;
-        }
-        .login-footer {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .login-footer p {
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-        .login-footer a {
-            color: #00e5ff;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .login-footer a:hover {
-            text-decoration: underline;
-        }
-        .signup-btn {
-            display: inline-block;
-            padding: 12px 24px;
-            background: transparent;
-            border: 1px solid rgba(0, 229, 255, 0.3);
-            border-radius: 10px;
-            color: #00e5ff;
-            font-size: 15px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-        .signup-btn:hover {
-            background: rgba(0, 229, 255, 0.1);
-            border-color: #00e5ff;
-        }
-        .error-message {
-            background: rgba(255, 68, 68, 0.1);
-            border: 1px solid rgba(255, 68, 68, 0.3);
-            color: #ff6b6b;
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .back-link {
-            position: absolute;
-            top: 20px;
-            left: 20px;
-            color: rgba(255, 255, 255, 0.6);
-            text-decoration: none;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            transition: color 0.3s ease;
-        }
-        .back-link:hover {
-            color: #00e5ff;
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>Sign In — Cybte AI</title>
+<link rel="icon" href="assets/images/favicon.ico">
+<link rel="stylesheet" href="assets/css/style.css?v=<?php echo filemtime(__DIR__ . '/assets/css/style.css'); ?>">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+.auth-shell{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;background:#040913;color:#fff}.auth-brand{padding:8vw;display:flex;flex-direction:column;justify-content:center;background:radial-gradient(circle at 25% 25%,rgba(59,231,255,.13),transparent 34%)}.auth-brand img{width:115px;margin-bottom:42px}.auth-brand h1{font-size:clamp(2.8rem,5vw,5rem);line-height:1;letter-spacing:-.055em;max-width:650px}.auth-brand p{max-width:560px;color:#91a3ba;line-height:1.8;margin-top:22px}.auth-panel{display:grid;place-items:center;padding:40px;background:rgba(8,20,35,.78);border-left:1px solid rgba(123,196,255,.12)}.auth-card{width:100%;max-width:440px}.auth-card h2{font-size:2rem;margin-bottom:8px}.auth-card>p{color:#91a3ba;margin-bottom:28px}.auth-card label{display:block;font-size:.78rem;color:#aebed0;margin:15px 0 7px}.auth-card input{width:100%;padding:15px 16px;border-radius:9px;border:1px solid rgba(255,255,255,.1);background:#07111f;color:#fff}.auth-card input:focus{outline:none;border-color:#3be7ff}.auth-submit{width:100%;margin-top:20px;padding:14px;border:0;border-radius:9px;background:linear-gradient(135deg,#3be7ff,#67a7ff);color:#03111a;font-weight:800;cursor:pointer}.auth-error{padding:12px 14px;border:1px solid rgba(255,99,99,.25);background:rgba(255,99,99,.07);border-radius:8px;color:#ff9b9b;margin-bottom:18px}.auth-links{margin-top:24px;color:#8194aa;font-size:.9rem}.auth-links a{color:#3be7ff;text-decoration:none}.back-home{position:absolute;top:24px;left:28px;color:#9dafc2;text-decoration:none;font-size:.85rem}@media(max-width:800px){.auth-shell{grid-template-columns:1fr}.auth-brand{display:none}.auth-panel{min-height:100vh;border-left:0;padding:28px}.back-home{z-index:2}}
+</style>
 </head>
 <body>
-    <div class="starry-background"></div>
-    <div class="stars"></div>
-    
-    <a href="vpn.php" class="back-link">
-        <i class="fas fa-arrow-left"></i> Back to Home
-    </a>
-
-    <div class="login-container">
-        <div class="login-card">
-            <div class="login-header">
-                <img src="assets/images/logo.png" alt="Cybte AI" class="login-logo">
-                <h1 class="login-title">Welcome Back</h1>
-                <p class="login-subtitle">Sign in to access your VPN dashboard</p>
-            </div>
-
-            <?php if($error): ?>
-            <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i>
-                <?php echo htmlspecialchars($error); ?>
-            </div>
-            <?php endif; ?>
-
-            <form method="POST" class="login-form">
-                <div class="form-group">
-                    <input type="email" name="email" placeholder="Email address" required autofocus>
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password" placeholder="Password" required>
-                </div>
-                <button type="submit" class="login-btn">
-                    <i class="fas fa-sign-in-alt"></i> Log In
-                </button>
-            </form>
-
-            <div class="login-divider">
-                <span>OR</span>
-            </div>
-
-            <div class="login-footer">
-                <p>New to Cybte?</p>
-                <a href="vpn_signup.php" class="signup-btn">
-                    <i class="fas fa-user-plus"></i> Create Account
-                </a>
-            </div>
-        </div>
-    </div>
-
-    <script src="assets/js/stars.js"></script>
+<a class="back-home" href="index.php"><i class="fas fa-arrow-left"></i> Cybte AI</a>
+<div class="auth-shell">
+<section class="auth-brand">
+<img src="assets/images/logo.png" alt="Cybte AI">
+<h1>Secure access to your digital trust workspace.</h1>
+<p>Manage Cybte AI services from one account, including Secure Vault and Cybte VPN as they are enabled for your organization.</p>
+</section>
+<section class="auth-panel">
+<div class="auth-card">
+<h2>Welcome back</h2>
+<p>Sign in to your Cybte AI account.</p>
+<?php if ($error !== ''): ?><div class="auth-error"><i class="fas fa-circle-exclamation"></i> <?php echo htmlspecialchars($error); ?></div><?php endif; ?>
+<form method="post" autocomplete="on">
+<?php echo csrf_input(); ?>
+<label for="email">Email address</label>
+<input id="email" type="email" name="email" autocomplete="email" required autofocus>
+<label for="password">Password</label>
+<input id="password" type="password" name="password" autocomplete="current-password" required>
+<button class="auth-submit" type="submit">Sign in <i class="fas fa-arrow-right"></i></button>
+</form>
+<div class="auth-links">New to Cybte AI? <a href="signup.php">Create an account</a></div>
+</div>
+</section>
+</div>
 </body>
 </html>

@@ -1,0 +1,20 @@
+# Environment secrets
+.env
+.env.*
+!.env.example
+
+# Runtime data
+logs/*.log
+*.log
+storage/vault/
+src/VPN/cookie.txt
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Dependencies / generated
+vendor/
+node_modules/

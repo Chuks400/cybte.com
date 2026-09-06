@@ -1,163 +1,107 @@
 <?php
-/**
- * Payment Create API
- * Creates a new payment order and generates QR code
- */
 
-// Log errors to file for debugging
-ini_set('log_errors', 1);
-ini_set('error_log', __DIR__ . '/../../../logs/payment_errors.log');
+declare(strict_types=1);
 
-// Disable error display to prevent breaking JSON output
-ini_set('display_errors', 0);
+ini_set('display_errors', '0');
 error_reporting(E_ALL);
-
-session_start();
 header('Content-Type: application/json');
 
-// Capture any output buffers
-ob_start();
-
-// Log start of request
-error_log("[PAYMENT] Create request started - User: " . ($_SESSION['user_id'] ?? 'not logged in'));
-
-try {
-    require_once __DIR__ . '/../../../src/config/database.php';
-    require_once __DIR__ . '/../../../src/Payment/PaymentInterface.php';
-    require_once __DIR__ . '/../../../src/Payment/Alipay.php';
-    require_once __DIR__ . '/../../../src/Payment/WeChatPay.php';
-    require_once __DIR__ . '/../../../src/Payment/PaymentFactory.php';
-    error_log("[PAYMENT] Files loaded successfully");
-} catch (Throwable $e) {
-    error_log("[PAYMENT] File load error: " . $e->getMessage());
-    ob_clean();
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Failed to load required files: ' . $e->getMessage()]);
-    exit;
-}
+require_once __DIR__ . '/../../../src/security.php';
+require_once __DIR__ . '/../../../src/config/database.php';
+require_once __DIR__ . '/../../../src/Payment/PaymentInterface.php';
+require_once __DIR__ . '/../../../src/Payment/Alipay.php';
+require_once __DIR__ . '/../../../src/Payment/WeChatPay.php';
+require_once __DIR__ . '/../../../src/Payment/PayPal.php';
+require_once __DIR__ . '/../../../src/Payment/PaymentFactory.php';
 
 use Cybte\Payment\PaymentFactory;
 
-// Check authentication
-if (!isset($_SESSION['user_id'])) {
-    error_log("[PAYMENT] Auth failed - no user_id in session");
-    http_response_code(401);
-    ob_clean();
-    echo json_encode(['success' => false, 'error' => 'User not authenticated']);
-    exit;
-}
-error_log("[PAYMENT] Auth passed - user_id: " . $_SESSION['user_id']);
+security_start_session();
 
-$userId = (int)$_SESSION['user_id'];
-
-// Get request data
-$input = json_decode(file_get_contents('php://input'), true);
-error_log("[PAYMENT] Raw input: " . file_get_contents('php://input'));
-
-if (!$input) {
-    error_log("[PAYMENT] Invalid JSON input");
-    http_response_code(400);
-    ob_clean();
-    echo json_encode(['success' => false, 'error' => 'Invalid JSON input']);
-    exit;
+function payment_json(int $status, array $payload): never
+{
+    http_response_code($status);
+    echo json_encode($payload, JSON_UNESCAPED_SLASHES);
+    exit();
 }
 
-$method = $input['method'] ?? '';
-$plan = $input['plan'] ?? '';
-$amount = floatval($input['amount'] ?? 0);
-error_log("[PAYMENT] Parsed input - method: {$method}, plan: {$plan}, amount: {$amount}");
-
-// Validate input
-if (!$method || !$plan || $amount <= 0) {
-    error_log("[PAYMENT] Validation failed - missing fields");
-    http_response_code(400);
-    ob_clean();
-    echo json_encode(['success' => false, 'error' => 'Missing required fields: method, plan, amount']);
-    exit;
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    payment_json(405, ['success' => false, 'error' => 'Method not allowed']);
 }
 
-// Validate payment method
-try {
-    $availableMethods = PaymentFactory::getAvailableMethods();
-    error_log("[PAYMENT] Available methods: " . implode(', ', $availableMethods));
-} catch (Throwable $e) {
-    error_log("[PAYMENT] Error getting methods: " . $e->getMessage());
-    ob_clean();
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Payment system error: ' . $e->getMessage()]);
-    exit;
+if (empty($_SESSION['user_id'])) {
+    payment_json(401, ['success' => false, 'error' => 'Authentication required']);
 }
 
-if (!PaymentFactory::isSupported($method)) {
-    error_log("[PAYMENT] Unsupported method: {$method}");
-    http_response_code(400);
-    ob_clean();
-    echo json_encode([
-        'success' => false,
-        'error' => 'Unsupported payment method. Available: ' . implode(', ', $availableMethods)
-    ]);
-    exit;
+$csrf = $_SERVER['HTTP_X_CSRF_TOKEN'] ?? '';
+if (!verify_csrf(is_string($csrf) ? $csrf : null)) {
+    payment_json(403, ['success' => false, 'error' => 'Invalid request token']);
 }
 
-error_log("[PAYMENT] Method validated: {$method}");
+if (!security_rate_limit('payment_create', 8, 900)) {
+    payment_json(429, ['success' => false, 'error' => 'Too many payment attempts. Please wait and try again.']);
+}
+
+$input = json_decode((string)file_get_contents('php://input'), true);
+if (!is_array($input)) {
+    payment_json(400, ['success' => false, 'error' => 'Invalid JSON request']);
+}
+
+$method = strtolower(trim((string)($input['method'] ?? '')));
+$planKey = strtolower(trim((string)($input['plan'] ?? '')));
+
+if (!preg_match('/^[a-z0-9_-]{1,50}$/', $planKey) || !PaymentFactory::isSupported($method)) {
+    payment_json(400, ['success' => false, 'error' => 'Invalid payment method or plan']);
+}
 
 try {
-    // Connect to database
-    error_log("[PAYMENT] Connecting to database...");
     $database = new Database();
     $conn = $database->connect();
-    error_log("[PAYMENT] Database connected");
 
-    // Generate order ID
-    $orderId = 'TS_' . time() . '_' . rand(1000, 9999);
-    error_log("[PAYMENT] Generated order ID: {$orderId}");
+    // Never trust a price supplied by the browser. The active plan in the database is authoritative.
+    $planStmt = $conn->prepare('SELECT plan_key, name, price_cny FROM payment_plans WHERE plan_key = :plan_key AND is_active = 1 LIMIT 1');
+    $planStmt->execute([':plan_key' => $planKey]);
+    $plan = $planStmt->fetch(PDO::FETCH_ASSOC);
 
-    // Create payment using the factory
-    error_log("[PAYMENT] Creating payment provider for method: {$method}");
-    $paymentProvider = PaymentFactory::create($method);
-    error_log("[PAYMENT] Payment provider created");
+    if (!$plan) {
+        payment_json(404, ['success' => false, 'error' => 'Selected plan is not available']);
+    }
 
-    error_log("[PAYMENT] Calling provider->create()");
-    $paymentData = $paymentProvider->create($orderId, $amount, "Cybte VPN - {$plan}");
-    error_log("[PAYMENT] Payment data received: " . json_encode($paymentData));
+    $amount = (float)$plan['price_cny'];
+    if ($amount <= 0) {
+        throw new RuntimeException('Invalid configured plan price.');
+    }
 
-    // Save to database
-    error_log("[PAYMENT] Saving to database...");
-    $stmt = $conn->prepare("
-        INSERT INTO payments (order_id, user_id, plan_name, amount, currency, method, status, qr_code)
-        VALUES (:order_id, :user_id, :plan_name, :amount, 'CNY', :method, 'pending', :qr_code)
-    ");
+    $orderId = 'CYB_' . date('YmdHis') . '_' . bin2hex(random_bytes(4));
+    $provider = PaymentFactory::create($method);
+    $paymentData = $provider->create($orderId, $amount, 'Cybte VPN - ' . $plan['name']);
 
+    $qrUrl = (string)($paymentData['qr_url'] ?? '');
+    $transactionId = isset($paymentData['transaction_id']) ? (string)$paymentData['transaction_id'] : null;
+
+    $stmt = $conn->prepare("INSERT INTO payments (order_id, user_id, plan_name, amount, currency, method, status, qr_code, transaction_id) VALUES (:order_id, :user_id, :plan_name, :amount, 'CNY', :method, 'pending', :qr_code, :transaction_id)");
     $stmt->execute([
         ':order_id' => $orderId,
-        ':user_id' => $userId,
-        ':plan_name' => $plan,
+        ':user_id' => (int)$_SESSION['user_id'],
+        ':plan_name' => $planKey,
         ':amount' => $amount,
         ':method' => $method,
-        ':qr_code' => $paymentData['qr_url'] ?? ''
+        ':qr_code' => $qrUrl,
+        ':transaction_id' => $transactionId,
     ]);
-    error_log("[PAYMENT] Saved to database, ID: " . $conn->lastInsertId());
 
-    // Return success response
-    ob_clean();
-    $response = [
+    payment_json(200, [
         'success' => true,
         'order_id' => $orderId,
-        'qr_url' => $paymentData['qr_url'],
-        'transaction_id' => $paymentData['transaction_id'] ?? null,
-        'mode' => $paymentData['mode'] ?? 'fake',
-        'expires_at' => $paymentData['expires_at'] ?? (time() + 3600)
-    ];
-    error_log("[PAYMENT] Success response: " . json_encode($response));
-    echo json_encode($response);
-
-} catch (Throwable $e) {
-    error_log("[PAYMENT] ERROR: " . $e->getMessage());
-    error_log("[PAYMENT] Stack trace: " . $e->getTraceAsString());
-    ob_clean();
-    http_response_code(500);
-    echo json_encode([
-        'success' => false,
-        'error' => 'Payment creation failed: ' . $e->getMessage()
+        'plan' => $planKey,
+        'amount' => $amount,
+        'currency' => 'CNY',
+        'qr_url' => $qrUrl,
+        'transaction_id' => $transactionId,
+        'mode' => (string)($paymentData['mode'] ?? 'provider'),
+        'expires_at' => $paymentData['expires_at'] ?? (time() + 900),
     ]);
+} catch (Throwable $e) {
+    error_log('Payment create error: ' . $e->getMessage());
+    payment_json(500, ['success' => false, 'error' => 'Payment could not be created. Please try again later.']);
 }
